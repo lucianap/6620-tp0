@@ -5,21 +5,25 @@
 #include "matrix.c"
 
 //Lee del standar input una cadena de longitud variable y la devuelve.
-char* readFromStdIn();
+//Almacena el tamaño total del buffer de la cadena en size
+char* readFromStdIn(size_t* size);
 //valida si lo leído es correcto o no.
 int validate(char* string);
 
 int main()
 {
-    char* stringRead = readFromStdIn();
+    size_t size;
+    char* stringRead = readFromStdIn(&size);
     validate(stringRead);
+
+    printf("\nSize is:%ld \n\n",size);
     
     free(stringRead);
     return 0;
 
 }
 
-char* readFromStdIn()
+char* readFromStdIn(size_t* size)
 {
     unsigned int len_max = 128;
     unsigned int current_size = 0;
@@ -46,6 +50,7 @@ char* readFromStdIn()
         pStr[i] = '\0';
 
         printf("\nReaded value:%s \n\n",pStr);
+        *size = current_size;
         
     } else {
         //LOG STD ERR 
