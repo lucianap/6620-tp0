@@ -16,7 +16,7 @@ char* read_from_stdin(size_t* size);
 //  2: valores inválidos: solo se aceptan floats en notación científica.
 //  3: tamaño de la matrix inválido: alguna de las matrices no tiene el tamaño especificado.
 //Si ocurre alguno de los casos mencionados se termina la ejecución del programa.
-double* parse(char* stringMatrixes, size_t* matrixSize);
+double* parse(char* string_matrixes, size_t* matrix_size);
 
 //Extrae la matriz [matrixNum] del array parseado.
 //Solo se admite matrixNum = 0 (primera matriz) o matrixNum = 1 (segunda matriz)
