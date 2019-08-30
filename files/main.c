@@ -2,8 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 //Incluyo directamente el source (me parece que va a ser más fácil para pasar a assembler.)
-#include "matrix.c"
-
+//#include "matrix.c"
+//Utilizo header, por problema de deficiones multiples
+#include "matrix.h" 
 //Lee del standar input una cadena de longitud variable y la devuelve.
 //Almacena el tamaño total del buffer de la cadena en size
 char* readFromStdIn(size_t* size);
@@ -43,7 +44,7 @@ char* readFromStdIn(size_t* size)
             if(i == current_size)
             {
                 current_size = i+len_max;
-                pStr = realloc(pStr, current_size);
+                pStr = realloc(pStr, current_size); // TODO - Falta verificar que el realloc se dio bien
             }
         }
 
