@@ -1,19 +1,25 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-//Incluyo directamente el source (me parece que va a ser más fácil para pasar a assembler.)
-//#include "matrix.c"
 //Utilizo header, por problema de deficiones multiples
 #include "matrix.h" 
 
 //Lee del standar input una cadena de longitud variable y la devuelve.
-//Almacena el tamaño total del buffer de la cadena en size
+//Almacena el tamaño total del buffer de la cadena en size.
 char* readFromStdIn(size_t* size);
 
 //Devuelve las matrices como un array de doubles, pone el tamaño de las matrices en la variable matrixSize.
+//Formato esperado: TamañoMatriz a11 .... ann b11 .... bnn
+//Ejemplo: 2 1.1 2.7 3 4.3 1.23 6 12 1
+//Casos de error:
+//  1: tamaño de las matrices inválido: se pone un número no entero como tamaño
+//  2: valores inválidos: solo se aceptan floats en notación científica.
+//  3: tamaño de la matrix inválido: alguna de las matrices no tiene el tamaño especificado.
+//Si ocurre alguno de los casos mencionados se termina la ejecución del programa.
 double* parse(char* stringMatrixes, size_t* matrixSize);
 
 //Extrae la matriz [matrixNum] del array parseado.
+//Solo se admite matrixNum = 0 (primera matriz) o matrixNum = 1 (segunda matriz)
 double* extractMatrix(double* arrayMatrixes, size_t matrixSize, size_t matrixNum);
 
 int main()
@@ -92,12 +98,12 @@ char* readFromStdIn(size_t* size)
 
 double* parse(char* stringRead, size_t* matrixSize) {
 
-    //cantidad de matrices en el string
+    //cantidad de matrices en el string.
+    //TODO - evaluar si tal vez este dato podría venir esto por param.
     int matrixCount = 2;
 
+    //Puntero en el que se almacena cada caracter leído.
     char *p;
-   
-    //Leo primer token
     p = strtok(stringRead, " ");
 
     double* matrixes = NULL;
@@ -156,6 +162,7 @@ double* extractMatrix(double* arrayMatrixes, size_t matrixSize, size_t matrixNum
     int matrixIndex = 0;
    
     for(i = 0; i < matrixNum; i++ ) {
+        //Se avanza el indicador de a una matriz.
         matrixIndex+=(matrixSize*matrixSize);
     }
 
