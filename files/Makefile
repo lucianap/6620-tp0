@@ -1,2 +1,2 @@
 tp0: main.c matrix.c
-	gcc -o tp0 main.c matrix.c -I.
+	gcc -o tp0 main.c matrix.c testing.c -I.

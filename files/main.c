@@ -3,6 +3,7 @@
 #include <stdlib.h>
 //Utilizo header, por problema de deficiones multiples
 #include "matrix.h" 
+#include "testing.h"
 
 //Lee del standar input una cadena de longitud variable y la devuelve.
 //Almacena el tamaño total del buffer de la cadena en size.
@@ -51,6 +52,9 @@ int main()
     free(matrix1);
     free(matrix2);    
     free(stringRead);
+
+    run_all_tests();
+
     return 0;
 
 }
