@@ -32,6 +32,8 @@ void test_print_matrix_print_rows_count_and_list_of_values();
 // libera la memoria reservada
 void test_asign_dynamic_array_to_matrix_and_destroy_also_free_array();
 
+void test_multiply_two_simples_matrixs();
+
 // Corre todas las pruebas
 void run_all_tests();
 

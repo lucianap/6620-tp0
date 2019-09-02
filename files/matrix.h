@@ -42,5 +42,9 @@ int print_matrix(FILE* fp, matrix_t* m);
 // Multiplica las matrices en m1 y m2
 matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2);
 
+double * matrix_get_row(matrix_t* m,size_t row_n);
+
+double * matrix_get_col(matrix_t* m,size_t col_n);
+
 #endif // __MATRIX_H
 

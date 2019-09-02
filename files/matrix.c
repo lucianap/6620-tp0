@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // Constructor de matrix_t
 // PRE: Recibe un la cantidad (size_t) 
@@ -56,5 +57,67 @@ int print_matrix(FILE* fp, matrix_t* m){
 	}
 	fprintf(fp, "\n");
 	return 0;
+}
+
+double * matrix_get_row(matrix_t* m,size_t row_n){
+    double* l_row = malloc(sizeof(double) * m->rows);
+    for (size_t i = 0; i < m->rows;++i){
+        l_row[i] = m->array[i + (row_n * m->rows)];
+    }
+    return l_row;
+}
+
+double * matrix_get_col(matrix_t* m,size_t col_n){
+    double* l_col= malloc(sizeof(double) * m->cols);
+    size_t pos = col_n;
+    for (size_t i = 0; i < m->cols;++i){
+        l_col[i] = m->array[pos];
+        pos = pos + m->cols;
+    }
+    return l_col;
+}
+
+matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
+
+    size_t rows_m1 = m1->rows;
+    size_t rows_m2 = m2->rows;
+
+    //Deben ser de igual tamano y ambas deben ser cuadradas.
+    if (rows_m1 != rows_m2 ) {
+        return NULL;
+    }
+    double* array_m1 = m1->array;
+    double* array_m2 = m2->array;
+
+    if (array_m1 == NULL || array_m2 == NULL) {
+        return NULL;
+    }
+
+    matrix_t * new_matrix = create_matrix(rows_m1,rows_m1);
+
+    if (new_matrix == NULL) {
+        return NULL;
+    }
+
+    double * array_nm = malloc(sizeof(double)*rows_m1*rows_m1);
+    size_t position = 0;
+
+    for(size_t i = 0; i < rows_m1;++i){
+        double * actual_row = matrix_get_row(m1,i);
+        for(size_t j = 0; j < rows_m1; ++j){
+            double * actual_col = matrix_get_col(m2,j);
+            double aux = 0;
+            for(size_t x = 0; x < rows_m1; ++x){
+                aux = aux + actual_col[x] * actual_row[x];
+            }
+            array_nm[position] = aux;
+            position++;
+            free(actual_col);
+        }
+        free(actual_row);
+    }
+
+    new_matrix->array = array_nm;
+    return new_matrix;
 }
 

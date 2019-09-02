@@ -155,12 +155,37 @@ void test_asign_dynamic_array_to_matrix_and_destroy_also_free_array() {
 	print_test_valgrind("Destruir matrix tambien libera la memoria del almacenada en el array");
 	fprintf(stderr, "\n");
 }
+
+void test_multiply_two_simples_matrixs(){
+    matrix_t * m1 = create_matrix(2,2);
+    double * array1 = malloc(sizeof(double) * 4);
+    for(size_t i = 0; i < 4; ++i){
+        array1[i] = i;
+    }
+    m1->array = array1;
+    print_matrix(stdout,m1);
+
+    matrix_t * m2 = create_matrix(2,2);
+    double * array2 = malloc(sizeof(double) * 4);
+    for(size_t i = 0; i < 4; ++i){
+        array2[i] = i + 4;
+    }
+    m2->array = array2;
+    print_matrix(stdout,m2);
+
+    matrix_t * result = matrix_multiply(m1,m2);
+    print_matrix(stdout,result);
+    destroy_matrix(m1);
+    destroy_matrix(m2);
+    destroy_matrix(result);
+}
 		
 // Corre todas las pruebas
 void run_all_tests() {
 	fprintf(stderr, "\n");
-	test_create_matrix_internal_array_is_null();
-	test_create_matrix_internal_rows_and_cols_are_parameter_values();
-	test_print_matrix_print_rows_count_and_list_of_values();
-	test_asign_dynamic_array_to_matrix_and_destroy_also_free_array();
+	//test_create_matrix_internal_array_is_null();
+	//test_create_matrix_internal_rows_and_cols_are_parameter_values();
+	//test_print_matrix_print_rows_count_and_list_of_values();
+	//test_asign_dynamic_array_to_matrix_and_destroy_also_free_array();
+	test_multiply_two_simples_matrixs();
 }
