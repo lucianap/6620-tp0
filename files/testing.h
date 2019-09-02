@@ -32,7 +32,27 @@ void test_print_matrix_print_rows_count_and_list_of_values();
 // libera la memoria reservada
 void test_asign_dynamic_array_to_matrix_and_destroy_also_free_array();
 
-void test_multiply_two_simples_matrixs();
+// Crea 2 matrices con sus respectivos arrays
+// dinamicos, realiza la multiplcacion entre ambas matrices
+// y compara el resultado. finalmente destruye las matrices
+// y libera la memoria utilizada
+void test_multiply_two_matrixs();
+
+// Crea 2 matrices con sus respectivos arrays
+// dinamicos, estas tienen tamaños disntos (como requisito deben tener el mismo tamaño)
+// realiza la multiplcacion entre ambas matrices
+// y retorna NULL por la pre condicion.
+// finalmente destruye las matrices
+// y libera la memoria utilizada
+void test_multiply_two_matrix_different_sizes();
+
+// Crea una matriz con el array lleno de cero y se
+// crea otra matriz con su array con numeros
+// realiza la multiplcacion entre ambas matrices
+// y compara si el resultado el array esta completo con cero.
+// finalmente destruye las matrices
+// y libera la memoria utilizada
+void test_multiply_with_zero_matrix();
 
 // Corre todas las pruebas
 void run_all_tests();

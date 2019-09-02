@@ -156,36 +156,190 @@ void test_asign_dynamic_array_to_matrix_and_destroy_also_free_array() {
 	fprintf(stderr, "\n");
 }
 
-void test_multiply_two_simples_matrixs(){
+// Crea 2 matrices con sus respectivos arrays
+// dinamicos, realiza la multiplcacion entre ambas matrices
+// y compara el resultado. finalmente destruye las matrices
+// y libera la memoria utilizada
+void test_multiply_two_matrixs(){
+
+    matrix_t * m1 = create_matrix(3,3);
+    print_test("Crear la primera matriz", m1 != NULL);
+    if (m1 == NULL){
+        return;
+    }
+    double * array1 = malloc(sizeof(double) * 9);
+    for(size_t i = 0; i < 9; ++i){
+        array1[i] = i;
+    }
+    print_test("Crear array dinamico para la primera matriz", array1 != NULL);
+    if (array1 == NULL) {
+        destroy_matrix(m1);
+        return;
+    }
+    m1->array = array1;
+
+    matrix_t * m2 = create_matrix(3,3);
+
+    print_test("Crear la segunda matriz", m2 != NULL);
+    if (m2 == NULL){
+        destroy_matrix(m1);
+        return;
+    }
+
+    double * array2 = malloc(sizeof(double) * 9);
+    for(size_t i = 0; i < 9; ++i){
+        array2[i] = i + 9;
+    }
+    m2->array = array2;
+
+    print_test("Crear array dinamico para la segunda matriz", array2 != NULL);
+    if (array2 == NULL) {
+        destroy_matrix(m1);
+        destroy_matrix(m2);
+        return;
+    }
+
+    matrix_t * result = matrix_multiply(m1,m2);
+
+    double true_result[9] = {42,45,48,150,162,174,258,279,300};
+    bool is_ok = true;
+    for(size_t i = 0; i < 9; ++i){
+        if(result->array[i] != true_result[i]){
+            is_ok = false;
+            break;
+        }
+    }
+
+    print_test("La multiplicacion retorno el valor esperado", is_ok);
+
+    destroy_matrix(m1);
+    destroy_matrix(m2);
+    destroy_matrix(result);
+    fprintf(stderr, "\n");
+}
+
+// Crea 2 matrices con sus respectivos arrays
+// dinamicos, estas tienen tamaños disntos (como requisito deben tener el mismo tamaño)
+// realiza la multiplcacion entre ambas matrices
+// y retorna NULL por la pre condicion.
+// finalmente destruye las matrices
+// y libera la memoria utilizada
+void test_multiply_two_matrix_different_sizes(){
     matrix_t * m1 = create_matrix(2,2);
+    print_test("Crear la primera matriz", m1 != NULL);
+    if (m1 == NULL){
+        return;
+    }
     double * array1 = malloc(sizeof(double) * 4);
     for(size_t i = 0; i < 4; ++i){
         array1[i] = i;
     }
+    print_test("Crear array dinamico para la primera matriz", array1 != NULL);
+    if (array1 == NULL) {
+        destroy_matrix(m1);
+        return;
+    }
     m1->array = array1;
-    print_matrix(stdout,m1);
 
-    matrix_t * m2 = create_matrix(2,2);
-    double * array2 = malloc(sizeof(double) * 4);
-    for(size_t i = 0; i < 4; ++i){
-        array2[i] = i + 4;
+    matrix_t * m2 = create_matrix(3,3);
+
+    print_test("Crear la segunda matriz", m2 != NULL);
+    if (m2 == NULL){
+        destroy_matrix(m1);
+        return;
+    }
+
+    double * array2 = malloc(sizeof(double) * 9);
+    for(size_t i = 0; i < 9; ++i){
+        array2[i] = i + 9;
     }
     m2->array = array2;
-    print_matrix(stdout,m2);
+
+    print_test("Crear array dinamico para la segunda matriz", array2 != NULL);
+    if (array2 == NULL) {
+        destroy_matrix(m1);
+        destroy_matrix(m2);
+        return;
+    }
 
     matrix_t * result = matrix_multiply(m1,m2);
-    print_matrix(stdout,result);
+
+    print_test("Los tamaños eran distintos, la matriz resultado debe ser NULL", result == NULL );
+
+    destroy_matrix(m1);
+    destroy_matrix(m2);
+    fprintf(stderr, "\n");
+}
+
+// Crea una matriz con el array lleno de cero y se
+// crea otra matriz con su array con numeros
+// realiza la multiplcacion entre ambas matrices
+// y compara si el resultado el array esta completo con cero.
+// finalmente destruye las matrices
+// y libera la memoria utilizada
+void test_multiply_with_zero_matrix(){
+    matrix_t * m1 = create_matrix(3,3);
+    print_test("Crear la primera matriz", m1 != NULL);
+    if (m1 == NULL){
+        return;
+    }
+    double * array1 = malloc(sizeof(double) * 9);
+    for(size_t i = 0; i < 9; ++i){
+        array1[i] = i;
+    }
+    print_test("Crear array dinamico para la primera matriz", array1 != NULL);
+    if (array1 == NULL) {
+        destroy_matrix(m1);
+        return;
+    }
+    m1->array = array1;
+
+    matrix_t * m2 = create_matrix(3,3);
+
+    print_test("Crear la segunda matriz", m2 != NULL);
+    if (m2 == NULL){
+        destroy_matrix(m1);
+        return;
+    }
+
+    double * array2 = malloc(sizeof(double) * 9);
+    for(size_t i = 0; i < 9; ++i){
+        array2[i] = 0;
+    }
+    m2->array = array2;
+
+    print_test("Crear array dinamico para la segunda matriz", array2 != NULL);
+    if (array2 == NULL) {
+        destroy_matrix(m1);
+        destroy_matrix(m2);
+        return;
+    }
+
+    matrix_t * result = matrix_multiply(m1,m2);
+    bool is_ok = true;
+    for(size_t i = 0; i < 9; ++i){
+        if(result->array[i] != 0){
+            is_ok = false;
+            break;
+        }
+    }
+
+    print_test("La multiplicacion retorno una matriz con ceros", is_ok);
+
     destroy_matrix(m1);
     destroy_matrix(m2);
     destroy_matrix(result);
+    fprintf(stderr, "\n");
 }
-		
+
 // Corre todas las pruebas
 void run_all_tests() {
 	fprintf(stderr, "\n");
-	//test_create_matrix_internal_array_is_null();
-	//test_create_matrix_internal_rows_and_cols_are_parameter_values();
-	//test_print_matrix_print_rows_count_and_list_of_values();
-	//test_asign_dynamic_array_to_matrix_and_destroy_also_free_array();
-	test_multiply_two_simples_matrixs();
+	test_create_matrix_internal_array_is_null();
+	test_create_matrix_internal_rows_and_cols_are_parameter_values();
+	test_print_matrix_print_rows_count_and_list_of_values();
+	test_asign_dynamic_array_to_matrix_and_destroy_also_free_array();
+	test_multiply_two_matrixs();
+    test_multiply_two_matrix_different_sizes();
+    test_multiply_with_zero_matrix();
 }

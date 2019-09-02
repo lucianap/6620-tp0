@@ -79,6 +79,10 @@ double * matrix_get_col(matrix_t* m,size_t col_n){
 
 matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
 
+    if (m1 == NULL || m2 == NULL){
+        return NULL;
+    }
+
     size_t rows_m1 = m1->rows;
     size_t rows_m2 = m2->rows;
 
