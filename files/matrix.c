@@ -49,7 +49,7 @@ int print_matrix(FILE* fp, matrix_t* m){
 	if (m->array == NULL){
 		return -1;
 	}
-	fprintf(fp, "%d ", (int)m->rows); //N - Matriz cuadrada
+	fprintf(fp, "%d ", (int)m->rows); //N / Matriz cuadrada (NxN)
 	size_t len_matriz = m->rows * m->cols;
 	size_t i = 0;
 	for (; i < len_matriz; ++i) {
@@ -61,7 +61,8 @@ int print_matrix(FILE* fp, matrix_t* m){
 
 double * matrix_get_row(matrix_t* m,size_t row_n){
     double* l_row = malloc(sizeof(double) * m->rows);
-    for (size_t i = 0; i < m->rows;++i){
+    size_t i = 0;
+    for (; i < m->rows;++i){
         l_row[i] = m->array[i + (row_n * m->rows)];
     }
     return l_row;
@@ -70,7 +71,8 @@ double * matrix_get_row(matrix_t* m,size_t row_n){
 double * matrix_get_col(matrix_t* m,size_t col_n){
     double* l_col= malloc(sizeof(double) * m->cols);
     size_t pos = col_n;
-    for (size_t i = 0; i < m->cols;++i){
+    size_t i = 0;
+    for (; i < m->cols;++i){
         l_col[i] = m->array[pos];
         pos = pos + m->cols;
     }
@@ -106,12 +108,15 @@ matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
     double * array_nm = malloc(sizeof(double)*rows_m1*rows_m1);
     size_t position = 0;
 
-    for(size_t i = 0; i < rows_m1;++i){
+    size_t i = 0;
+    for(; i < rows_m1;++i){
         double * actual_row = matrix_get_row(m1,i);
-        for(size_t j = 0; j < rows_m1; ++j){
+        size_t j = 0;
+	for(; j < rows_m1; ++j){
             double * actual_col = matrix_get_col(m2,j);
             double aux = 0;
-            for(size_t x = 0; x < rows_m1; ++x){
+            size_t x = 0;
+	    for(; x < rows_m1; ++x){
                 aux = aux + actual_col[x] * actual_row[x];
             }
             array_nm[position] = aux;

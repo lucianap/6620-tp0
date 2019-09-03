@@ -32,7 +32,7 @@ void print_test_valgrind(const char * test_description) {
 void test_create_matrix_internal_array_is_null() {
 	fprintf(
 		stderr, 
-		"PRUEBA : AL CREAR UNA MATRIZ SU ARREGLO INTERNO ES UN PUNTERO A NULL\n"
+		"TEST : AL CREAR UNA MATRIZ SU ARREGLO INTERNO ES UN PUNTERO A NULL\n"
 	);
 	
 	matrix_t * ptr_matrix = create_matrix(0, 0);
@@ -60,7 +60,7 @@ void test_create_matrix_internal_array_is_null() {
 void test_create_matrix_internal_rows_and_cols_are_parameter_values() {
 	fprintf(
 		stderr, 
-		"PRUEBA : AL CREAR UNA MATRIZ, LA CANTIDAD DE FILAS Y COLUMNAS ESTA DEFINIDA POR PARAMETRO\n"
+		"TEST : AL CREAR UNA MATRIZ, LA CANTIDAD DE FILAS Y COLUMNAS ESTA DEFINIDA POR PARAMETRO\n"
 	);
 	
 	size_t two_rows = 2;
@@ -97,7 +97,7 @@ void test_create_matrix_internal_rows_and_cols_are_parameter_values() {
 void test_print_matrix_print_rows_count_and_list_of_values() {
 	fprintf(
 		stderr, 
-		"PRUEBA : IMPRIMIR MATRIZ IMPRIME LA CANTIDAD DE FILAS SEGUIDO DE UN LISTA DE LOS VALORES DE LA MATRIZ POR FILA\n"
+		"TEST : IMPRIMIR MATRIZ IMPRIME LA CANTIDAD DE FILAS SEGUIDO DE UN LISTA DE LOS VALORES DE LA MATRIZ POR FILA\n"
 	);
 	
 	matrix_t * ptr_matrix = create_matrix(2,2);
@@ -131,7 +131,7 @@ void test_print_matrix_print_rows_count_and_list_of_values() {
 void test_asign_dynamic_array_to_matrix_and_destroy_also_free_array() {
 	fprintf(
 		stderr, 
-		"PRUEBA : AL ASIGNAR UN ARREGLO RESERVADA EN MEMORIA DINAMICA A UNA MATRIZ, Y DESTRUIRLA, TAMBIEN LIBERA AL ARREGLO");
+		"TEST : AL ASIGNAR UN ARREGLO RESERVADA EN MEMORIA DINAMICA A UNA MATRIZ, Y DESTRUIRLA, TAMBIEN LIBERA AL ARREGLO\n");
 	matrix_t * ptr_matrix = create_matrix(2,2);
 	print_test("Crear matriz", ptr_matrix != NULL);
 	if (ptr_matrix == NULL){
@@ -168,7 +168,8 @@ void test_multiply_two_matrixs(){
         return;
     }
     double * array1 = malloc(sizeof(double) * 9);
-    for(size_t i = 0; i < 9; ++i){
+	size_t i = 0;
+    for(; i < 9; ++i){
         array1[i] = i;
     }
     print_test("Crear array dinamico para la primera matriz", array1 != NULL);
@@ -187,7 +188,8 @@ void test_multiply_two_matrixs(){
     }
 
     double * array2 = malloc(sizeof(double) * 9);
-    for(size_t i = 0; i < 9; ++i){
+    i = 0;
+	for(; i < 9; ++i){
         array2[i] = i + 9;
     }
     m2->array = array2;
@@ -203,7 +205,8 @@ void test_multiply_two_matrixs(){
 
     double true_result[9] = {42,45,48,150,162,174,258,279,300};
     bool is_ok = true;
-    for(size_t i = 0; i < 9; ++i){
+    i = 0;
+	for(; i < 9; ++i){
         if(result->array[i] != true_result[i]){
             is_ok = false;
             break;
@@ -219,7 +222,7 @@ void test_multiply_two_matrixs(){
 }
 
 // Crea 2 matrices con sus respectivos arrays
-// dinamicos, estas tienen tamaños disntos (como requisito deben tener el mismo tamaño)
+// dinamicos, estas tienen tamaños distintos (como requisito deben tener el mismo tamaño)
 // realiza la multiplcacion entre ambas matrices
 // y retorna NULL por la pre condicion.
 // finalmente destruye las matrices
@@ -231,7 +234,8 @@ void test_multiply_two_matrix_different_sizes(){
         return;
     }
     double * array1 = malloc(sizeof(double) * 4);
-    for(size_t i = 0; i < 4; ++i){
+    size_t i = 0;
+	for(; i < 4; ++i){
         array1[i] = i;
     }
     print_test("Crear array dinamico para la primera matriz", array1 != NULL);
@@ -250,7 +254,8 @@ void test_multiply_two_matrix_different_sizes(){
     }
 
     double * array2 = malloc(sizeof(double) * 9);
-    for(size_t i = 0; i < 9; ++i){
+    i = 0;
+	for(; i < 9; ++i){
         array2[i] = i + 9;
     }
     m2->array = array2;
@@ -284,7 +289,8 @@ void test_multiply_with_zero_matrix(){
         return;
     }
     double * array1 = malloc(sizeof(double) * 9);
-    for(size_t i = 0; i < 9; ++i){
+    size_t i = 0;
+	for(; i < 9; ++i){
         array1[i] = i;
     }
     print_test("Crear array dinamico para la primera matriz", array1 != NULL);
@@ -293,6 +299,7 @@ void test_multiply_with_zero_matrix(){
         return;
     }
     m1->array = array1;
+    print_matrix(stderr,m1);
 
     matrix_t * m2 = create_matrix(3,3);
 
@@ -301,9 +308,9 @@ void test_multiply_with_zero_matrix(){
         destroy_matrix(m1);
         return;
     }
-
     double * array2 = malloc(sizeof(double) * 9);
-    for(size_t i = 0; i < 9; ++i){
+    i = 0;
+    for(; i < 9; ++i){
         array2[i] = 0;
     }
     m2->array = array2;
@@ -314,17 +321,22 @@ void test_multiply_with_zero_matrix(){
         destroy_matrix(m2);
         return;
     }
+    print_matrix(stderr,m2);
 
     matrix_t * result = matrix_multiply(m1,m2);
     bool is_ok = true;
-    for(size_t i = 0; i < 9; ++i){
+    i = 0;
+    for(; i < 9; ++i){
         if(result->array[i] != 0){
-            is_ok = false;
+			fprintf(stderr, "result->array[%ld] = %g", i, result->array[i]);
+			is_ok = false;
             break;
         }
     }
 
     print_test("La multiplicacion retorno una matriz con ceros", is_ok);
+    // TODO : ESTA PRUEBA NO FALLA EN LINUX, PERO SI EN MIPS
+    print_matrix(stderr,result);
 
     destroy_matrix(m1);
     destroy_matrix(m2);
