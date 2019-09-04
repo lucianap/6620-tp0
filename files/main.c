@@ -27,7 +27,7 @@ double* extract_matrix(double* array_matrixes, size_t matrix_size, size_t matrix
 void logAndExit(int error_code);
 
 //main program.
-void exec_multiplicator();
+void exec_program();
 
 void show_help() {
 
@@ -65,14 +65,14 @@ int main( int argc, const char* argv[] ) {
             }
 		}
     } else {
-        exec_multiplicator();
+        exec_program();
     }
     
     
     return 0;
 }
 
-void exec_multiplicator() {
+void exec_program() {
 
     //Leo de std in la entrada de caracteres.
     size_t size;
@@ -96,12 +96,10 @@ void exec_multiplicator() {
 
     matrix_t *final_matrix = matrix_multiply(matrix_one, matrix_two);
 
-    printf("\nSe imprime la matriz producto de la multiplicación \n\n");
-    int i;
-    for(i = 0; i < (matrix_size*matrix_size); i++){
-        printf("matrix2[%i]=%f \n", i, final_matrix->array[i]);
-    }
+    print_matrix(stdout, final_matrix);
 
+    destroy_matrix(matrix_one);
+    destroy_matrix(matrix_two);
     free(matrixes);
     free(matrix1);
     free(matrix2);    
