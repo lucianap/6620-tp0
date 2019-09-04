@@ -26,7 +26,7 @@ double* extract_matrix(double* array_matrixes, size_t matrix_size, size_t matrix
 //Loguea un mensaje por stderr y sale de la aplicación.
 void logAndExit(int error_code);
 
-//main program.
+//Ejecuta el programa principal de multiplicación de matrices.
 void exec_program();
 
 void show_help() {
@@ -34,14 +34,17 @@ void show_help() {
     char buffer[512];
 	snprintf(buffer, sizeof buffer, "%s",
    			"\tUsage: \n"
-   			"\ttp0 -h \n"
-   			"\ttp0 -V \n"
+   			"\t\t./tp0 -h \n"
+   			"\t\t./tp0 -V \n"
+            "\t\t./tp0 < in_file > out_file\n"   
    			"\ttp0 [options] \n"
    			"\tOptions: \n"
    			"\t\t-V, --version Print version and quit.\n"
    			"\t\t-h, --help Print this information.\n"
 			"\tExamples:\n"
-			"\t\tcat testFiles/testSciFiNotationWrong | ./tp0\n"
+			"\t\t./tp0 < in.txt > out.txt\n"
+            "\t\tcat in.txt | ./tp0 > out.txt\n"
+            
 		);
 	printf("%s\r\n", buffer);
 
