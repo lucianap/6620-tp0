@@ -23,14 +23,66 @@ double* parse(char* string_matrixes, size_t* matrix_size);
 //Solo se admite matrixNum = 0 (primera matriz) o matrixNum = 1 (segunda matriz)
 double* extract_matrix(double* array_matrixes, size_t matrix_size, size_t matrix_num);
 
-int main()
-{
+//Loguea un mensaje por stderr y sale de la aplicación.
+void logAndExit(int error_code);
+
+//main program.
+void exec_multiplicator();
+
+void show_help() {
+
+    char buffer[512];
+	snprintf(buffer, sizeof buffer, "%s",
+   			"\tUsage: \n"
+   			"\ttp0 -h \n"
+   			"\ttp0 -V \n"
+   			"\ttp0 [options] \n"
+   			"\tOptions: \n"
+   			"\t\t-V, --version Print version and quit.\n"
+   			"\t\t-h, --help Print this information.\n"
+			"\tExamples:\n"
+			"\t\tcat testFiles/testSciFiNotationWrong | ./tp0\n"
+		);
+	printf("%s\r\n", buffer);
+
+}
+
+void version() {
+	printf("%s", "tp0 version 1.0\n");
+}
+
+int main( int argc, const char* argv[] ) {
+    if(argc > 1) {
+		int i;
+		for(i = 1; i < argc; i++) {
+			if(argv[i][1] == 'h' || strcmp(argv[i],"--help") == 0 ) {
+				show_help();
+			} else if (argv[i][1] == 'V' || strcmp(argv[i],"--version") == 0) {
+				version();
+			} else {
+                printf("Argument not recognized.\n");
+                
+            }
+		}
+    } else {
+        exec_multiplicator();
+    }
+    
+    
+    return 0;
+}
+
+void exec_multiplicator() {
+
+    //Leo de std in la entrada de caracteres.
     size_t size;
     char* string_read = read_from_stdin(&size);
     
+    //Transformo esa entrada a doubles, en matrix_size pongo la dimensión de la matriz (sabiendo que es nxn)
     size_t matrix_size;
     double* matrixes = parse(string_read, &matrix_size);
     
+    //Extraigo la matriz 1 y la matriz 2 de la tira de doubles parseada
     double* matrix1 = extract_matrix(matrixes, matrix_size, 0);
     double* matrix2 = extract_matrix(matrixes, matrix_size, 1);
 
@@ -55,9 +107,6 @@ int main()
     free(matrix2);    
     free(string_read);
 
-    //run_all_tests();
-    
-    return 0;
 }
 
 char* read_from_stdin(size_t* size)
@@ -81,10 +130,7 @@ char* read_from_stdin(size_t* size)
             {
                 current_size = i+len_max;
                 if(!(pStr = realloc(pStr, current_size))){
-
-                    fprintf( stderr, "Realloc falló.");
-                    exit(1);
-
+                    logAndExit(6);
                 }
             }
         }
@@ -93,8 +139,7 @@ char* read_from_stdin(size_t* size)
         *size = current_size;
         
     } else {
-        fprintf( stderr, "Malloc falló.");
-        exit(1);
+        logAndExit(5);
     }
 
     return pStr;
@@ -134,20 +179,17 @@ double* parse(char* string_read, size_t* matrix_size) {
                 iterator++;
             } else {
 
-                fprintf( stderr, "Caracter inválido para un valor de la matriz:%s.\n", p);
-                exit(1);
+                logAndExit(4);
             
             }
         }
 
         if((iterator) != n) {
-            fprintf( stderr, "Tamaño inválido para la matriz. Solo se permiten matrices cuadradas.\n" );
-            exit(1);
+            logAndExit(3);
         }
 
     } else {
-        fprintf( stderr, "Caracter inválido para el tamaño de la matriz:%s.\n", p);
-        exit(1);
+        logAndExit(2);
     }
 
     return matrixes;
@@ -160,7 +202,7 @@ double* extract_matrix(double* array_matrixes, size_t matrix_size, size_t matrix
     int i;
     
     if(matrix_num > 1) {
-        fprintf( stderr, "La cantidad de matrices permitidas son 2.\n");
+        logAndExit(1);
     }
     
     double* matrix_n = malloc(matrix_size*matrix_size*sizeof(double));
@@ -178,3 +220,26 @@ double* extract_matrix(double* array_matrixes, size_t matrix_size, size_t matrix
     return matrix_n;
 }
 
+void logAndExit(int error_code) {
+    switch(error_code) {
+        case 1: {
+            fprintf( stderr, "La cantidad de matrices permitidas son 2.\n");
+            break;
+        } case 2: {
+            fprintf( stderr, "Caracter inválido para el tamaño de la matriz.\n");
+            break;
+        } case 3: {
+            fprintf( stderr, "Tamaño inválido para la matriz. Solo se permiten matrices cuadradas.\n" );
+            break;
+        } case 4: {
+            fprintf( stderr, "Caracter inválido para un valor de la matriz.\n");
+            break;
+        } case 5: {
+            fprintf( stderr, "Malloc falló adquiriendo memoria.");
+        } case 6: {
+            fprintf( stderr, "Realloc falló realocando memoria.");
+        }
+    }
+
+    exit(1);
+}
