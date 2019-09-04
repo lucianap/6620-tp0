@@ -1,9 +1,24 @@
 # 6620-tp0
 
-Instrucciones
+Trabajo práctico de Organización del Computador.
+Multiplicador de matrices en C.
 
-make
+## Instalación
 
-Ejemplo de uso
+```bash
+make all
+```
 
+## Cómo correrlo
+
+```bash
 cat test | ./tp0
+```
+
+## Cómo correr los tests
+
+```bash
+make tests
+```
+
+
