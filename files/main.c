@@ -34,26 +34,28 @@ int main()
     double* matrix1 = extract_matrix(matrixes, matrix_size, 0);
     double* matrix2 = extract_matrix(matrixes, matrix_size, 1);
 
-    printf("\nSize de las matrices:%ld \n\n",matrix_size);
+    //instancio matrix 1
+    matrix_t *matrix_one = create_matrix(matrix_size, matrix_size);
+    matrix_one->array = matrix1;
 
-    printf("\nSe imprime la matriz 1 \n\n");
+    //instancio matrix 2
+    matrix_t *matrix_two = create_matrix(matrix_size, matrix_size);
+    matrix_two->array = matrix2;
+
+    matrix_t *final_matrix = matrix_multiply(matrix_one, matrix_two);
+
+    printf("\nSe imprime la matriz producto de la multiplicación \n\n");
     int i;
     for(i = 0; i < (matrix_size*matrix_size); i++){
-        printf("matrix1[%i]=%f \n", i, matrix1[i]);
+        printf("matrix2[%i]=%f \n", i, final_matrix->array[i]);
     }
-
-    printf("\nSe imprime la matriz 2 \n\n");
-    for(i = 0; i < (matrix_size*matrix_size); i++){
-        printf("matrix2[%i]=%f \n", i, matrix2[i]);
-    }
-
 
     free(matrixes);
     free(matrix1);
     free(matrix2);    
     free(string_read);
 
-    run_all_tests();
+    //run_all_tests();
     
     return 0;
 }
