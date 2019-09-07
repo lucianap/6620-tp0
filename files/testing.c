@@ -77,7 +77,7 @@ void test_create_matrix_internal_rows_and_cols_are_parameter_values() {
 	}
 
 	print_test(
-		"Al crear una matriz, la cantidad de fila y columnas viene definido por parametro", 
+		"Al crear una matriz, la cantidad de filas y columnas viene definido por parametro", 
 		(
 		 	(ptr_matrix->rows == two_rows) 
 		 	&& 
@@ -109,6 +109,7 @@ void test_print_matrix_print_rows_count_and_list_of_values() {
 	double array[] = {1,2,3,4};
 	ptr_matrix->array = array;
 	print_test("Asignar arreglo estatico a la matriz : {1,2,3,4}", ptr_matrix->array != NULL);
+	fprintf(stderr, "Imprimo matrix : "); // Se imprime a continuacion en la prueba
 	print_test(
 		"Imprimir matriz imprime la cantidad de filas, seguido de los valores de la matriz, separados por espacios : 2 1 2 3 4", 
 		print_matrix(stderr, ptr_matrix) == 0
@@ -148,9 +149,9 @@ void test_asign_dynamic_array_to_matrix_and_destroy_also_free_array() {
 	for (; i < many_doubles; ++i) {
 		array[i] = (double)i + 0.001;
 	}
-	print_test("Definir contenido del array com {0.001,1.001,2.001,3.001}", true);
+	print_test("Definir contenido del arreglo com {0.001,1.001,2.001,3.001}", true);
 	ptr_matrix->array = array;
-	print_test("Imprimir array imprime : 2 0.001 1.001 2.001 3.001", print_matrix(stderr, ptr_matrix) == 0);
+	print_test("Imprimir arreglo imprime : 2 0.001 1.001 2.001 3.001", print_matrix(stderr, ptr_matrix) == 0);
 	destroy_matrix(ptr_matrix);
 	print_test_valgrind("Destruir matrix tambien libera la memoria del almacenada en el array");
 	fprintf(stderr, "\n");
@@ -161,7 +162,7 @@ void test_asign_dynamic_array_to_matrix_and_destroy_also_free_array() {
 // y compara el resultado. finalmente destruye las matrices
 // y libera la memoria utilizada
 void test_multiply_two_matrixs(){
-
+	fprintf(stderr, "TEST : MULTIPLICAR DOS MATRICES DE IGUAL DIMESION\n");
     matrix_t * m1 = create_matrix(3,3);
     print_test("Crear la primera matriz", m1 != NULL);
     if (m1 == NULL){
@@ -172,12 +173,14 @@ void test_multiply_two_matrixs(){
     for(; i < 9; ++i){
         array1[i] = i;
     }
-    print_test("Crear array dinamico para la primera matriz", array1 != NULL);
+    print_test("Crear arreglo dinamico para la primera matriz", array1 != NULL);
     if (array1 == NULL) {
         destroy_matrix(m1);
         return;
     }
     m1->array = array1;
+    fprintf(stderr, "Matriz 1 : ");
+    print_matrix(stderr, m1);
 
     matrix_t * m2 = create_matrix(3,3);
 
@@ -194,12 +197,14 @@ void test_multiply_two_matrixs(){
     }
     m2->array = array2;
 
-    print_test("Crear array dinamico para la segunda matriz", array2 != NULL);
+    print_test("Crear arreglo dinamico para la segunda matriz", array2 != NULL);
     if (array2 == NULL) {
         destroy_matrix(m1);
         destroy_matrix(m2);
         return;
     }
+    fprintf(stderr, "Matriz 2 : ");
+    print_matrix(stderr, m2);
 
     matrix_t * result = matrix_multiply(m1,m2);
 
@@ -212,9 +217,16 @@ void test_multiply_two_matrixs(){
             break;
         }
     }
-
+	fprintf(stderr, "Matriz resultado esperada : 3 ");
+	i = 0;
+	for (; i < 9; ++i){
+		fprintf(stderr, "%g ", true_result[i]);
+	}
+	fprintf(stderr, "\n");
+	fprintf(stderr, "Matriz obtenida : ");
+	print_matrix(stderr, result);
     print_test("La multiplicacion retorno el valor esperado", is_ok);
-
+	fprintf(stderr, "Este resultado pueda dar ERROR, dependiendo de la precision de la componente de calculo de numeros en punto flotante con la que se cuenta.\n");
     destroy_matrix(m1);
     destroy_matrix(m2);
     destroy_matrix(result);
@@ -228,6 +240,7 @@ void test_multiply_two_matrixs(){
 // finalmente destruye las matrices
 // y libera la memoria utilizada
 void test_multiply_two_matrix_different_sizes(){
+	fprintf(stderr, "TEST : MULTIPLICAR DOS MATRICES DE DISTINTA DIMNESION DEVUELVE NULL\n");
     matrix_t * m1 = create_matrix(2,2);
     print_test("Crear la primera matriz", m1 != NULL);
     if (m1 == NULL){
@@ -238,7 +251,7 @@ void test_multiply_two_matrix_different_sizes(){
 	for(; i < 4; ++i){
         array1[i] = i;
     }
-    print_test("Crear array dinamico para la primera matriz", array1 != NULL);
+    print_test("Crear arreglo dinamico para la primera matriz", array1 != NULL);
     if (array1 == NULL) {
         destroy_matrix(m1);
         return;
@@ -260,7 +273,7 @@ void test_multiply_two_matrix_different_sizes(){
     }
     m2->array = array2;
 
-    print_test("Crear array dinamico para la segunda matriz", array2 != NULL);
+    print_test("Crear arreglo dinamico para la segunda matriz", array2 != NULL);
     if (array2 == NULL) {
         destroy_matrix(m1);
         destroy_matrix(m2);
@@ -283,6 +296,7 @@ void test_multiply_two_matrix_different_sizes(){
 // finalmente destruye las matrices
 // y libera la memoria utilizada
 void test_multiply_with_zero_matrix(){
+	fprintf(stderr, "TEST : MULTIPLICAR DOS MATRICES DONDE UNA DE ELLAS ES LA MATRIZ NULA, DEVUELVE LA MATRIZ LA NULA\n");
     matrix_t * m1 = create_matrix(3,3);
     print_test("Crear la primera matriz", m1 != NULL);
     if (m1 == NULL){
@@ -293,12 +307,14 @@ void test_multiply_with_zero_matrix(){
 	for(; i < 9; ++i){
         array1[i] = i;
     }
-    print_test("Crear array dinamico para la primera matriz", array1 != NULL);
+    print_test("Crear arreglo dinamico para la primera matriz", array1 != NULL);
     if (array1 == NULL) {
         destroy_matrix(m1);
         return;
     }
     m1->array = array1;
+
+	fprintf(stderr, "Matriz 1 : ");
     print_matrix(stderr,m1);
 
     matrix_t * m2 = create_matrix(3,3);
@@ -321,6 +337,7 @@ void test_multiply_with_zero_matrix(){
         destroy_matrix(m2);
         return;
     }
+	fprintf(stderr, "Matriz 2 : ");
     print_matrix(stderr,m2);
 
     matrix_t * result = matrix_multiply(m1,m2);
@@ -333,11 +350,10 @@ void test_multiply_with_zero_matrix(){
             break;
         }
     }
-
+	fprintf(stderr, "Matriz obtenida : ");
+	print_matrix(stderr, result);
     print_test("La multiplicacion retorno una matriz con ceros", is_ok);
-    // TODO : ESTA PRUEBA NO FALLA EN LINUX, PERO SI EN MIPS
-    print_matrix(stderr,result);
-
+    fprintf(stderr, "Este resultado pueda dar ERROR, dependiendo de la precision de la componente de calculo de numeros en punto flotante con la que se cuenta.\n");
     destroy_matrix(m1);
     destroy_matrix(m2);
     destroy_matrix(result);
