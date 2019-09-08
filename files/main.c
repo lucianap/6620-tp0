@@ -29,6 +29,9 @@ void logAndExit(int error_code);
 //Ejecuta el programa principal de multiplicación de matrices.
 void exec_program();
 
+//Procesador línea por línea.
+void process_line(char* line); 
+
 void show_help() {
 
     char buffer[512];
@@ -80,10 +83,33 @@ void exec_program() {
     //Leo de std in la entrada de caracteres.
     size_t size;
     char* string_read = read_from_stdin(&size);
-    
-    //Transformo esa entrada a doubles, en matrix_size pongo la dimensión de la matriz (sabiendo que es nxn)
+
+    //Cada línea representa una matriz, así que leo línea por línea.
+    char * cur_line = string_read;
+    while(cur_line)
+    {
+        char * next_line = strchr(cur_line, '\n');
+        if (next_line) *next_line = '\0';  // termino la línea actual temporalmente.
+        
+        if(strlen(cur_line) > 0) {
+            process_line(cur_line);
+        }
+        
+        if (next_line) *next_line = '\n';   // para ser limpios le devuelvo el newline a la linea.
+        cur_line = next_line ? (next_line+1) : NULL;
+
+    }
+           
+    free(string_read);
+
+}
+
+
+void process_line(char* line) {
+
+     //Transformo esa entrada a doubles, en matrix_size pongo la dimensión de la matriz (sabiendo que es nxn)
     size_t matrix_size;
-    double* matrixes = parse(string_read, &matrix_size);
+    double* matrixes = parse(line, &matrix_size);
     
     //Extraigo la matriz 1 y la matriz 2 de la tira de doubles parseada
     double* matrix1 = extract_matrix(matrixes, matrix_size, 0);
@@ -105,8 +131,7 @@ void exec_program() {
     destroy_matrix(matrix_two);
     free(matrixes);
     free(matrix1);
-    free(matrix2);    
-    free(string_read);
+    free(matrix2); 
 
 }
 
@@ -122,7 +147,7 @@ char* read_from_stdin(size_t* size)
     {
         int c = EOF;
         unsigned int i =0;
-        while (( c = getchar() ) != '\n' && c != EOF)
+        while (( c = getchar() ) && c != EOF)
         {
             pStr[i++]=(char)c;
 
@@ -179,9 +204,16 @@ double* parse(char* string_read, size_t* matrix_size) {
                 matrixes[iterator] = matrix_valueij;
                 iterator++;
             } else {
-
-                logAndExit(4);
-            
+                //Fix para cuando atof devuelve 0 (supuestamente el valor 0 está reservado para cuando falla.. a excepción que el valor
+                // a parsear sea 0, entonces parece que falló cuando en realidad no.)
+                //--------- TODO VER SI SE PUEDE MEJORAR.
+                if(strcmp(p, "0")==0){
+                    matrixes[iterator] = matrix_valueij;
+                    iterator++;
+                } else {
+                    logAndExit(4);
+                };
+                
             }
         }
 
