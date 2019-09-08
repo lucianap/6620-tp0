@@ -130,9 +130,6 @@ void process_line(char* line) {
     destroy_matrix(matrix_one);
     destroy_matrix(matrix_two);
     free(matrixes);
-    free(matrix1);
-    free(matrix2); 
-
 }
 
 char* read_from_stdin(size_t* size)

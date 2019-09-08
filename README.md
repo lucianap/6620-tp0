@@ -5,9 +5,10 @@ Multiplicador de matrices cuadradas en C.
 
 ## Informe 
 
-```bash
+
 El informe se realiza en latex, mediante el servicio online Overleaf.  
 Link al informe, con permisos de edicion:  
+```bash
 https://www.overleaf.com/1392552578pffmtxwfcdnb
 ```
 
