@@ -1,4 +1,4 @@
-	.file	1 "main.c"
+	.file	1 "../main.c"
 	.section .mdebug.abi32
 	.previous
 	.abicalls

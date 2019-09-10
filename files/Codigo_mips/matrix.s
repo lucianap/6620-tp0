@@ -1,4 +1,4 @@
-	.file	1 "matrix.c"
+	.file	1 "../matrix.c"
 	.section .mdebug.abi32
 	.previous
 	.abicalls
