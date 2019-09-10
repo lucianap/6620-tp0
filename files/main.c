@@ -30,7 +30,9 @@ de los elementos de la segunda.
 Ademas almacena en matrix_size el la dimension
 de la matriz.
 */
-double* parse(char* string_matrixes, size_t* matrix_size);
+double* parse(
+	char* string_matrixes, 
+	size_t* matrix_size);
 
 // Extrae un arreglo de elementos de una la matriz
 // desde un arreglo de elementos para dos matrices
@@ -47,7 +49,10 @@ matriz seleccionada (0 o 1).
 Queda a responsabilidad del usuario liberar la memoria
 reservada por medio de la funcion free.
 */
-double* extract_matrix(double* array_matrixes, size_t matrix_size, size_t matrix_num);
+double* extract_matrix(
+	double* array_matrixes, 
+	size_t matrix_size, 
+	size_t matrix_num);
 
 // Loguea un mensaje por stderr y sale de la aplicacion.
 /*
@@ -135,19 +140,24 @@ void exec_program() {
     size_t size;
     char* string_read = read_from_stdin(&size);
 
-    //Cada línea representa una matriz, así que leo línea por línea.
+    //Cada línea representa una matriz, 
+    //así que leo línea por línea.
     char * cur_line = string_read;
     while(cur_line)
     {
         char * next_line = strchr(cur_line, '\n');
-        if (next_line) *next_line = '\0';  // termino la línea actual temporalmente.
+        if (next_line) *next_line = '\0';  
+	// termino la línea actual temporalmente.
         
         if(strlen(cur_line) > 0) {
             process_line(cur_line);
         }
         
-        if (next_line) *next_line = '\n';   // para ser limpios le devuelvo el newline a la linea.
-        cur_line = next_line ? (next_line+1) : NULL;
+        if (next_line) *next_line = '\n';   
+	// para ser limpios le devuelvo el newline 
+	// a la linea.
+        
+	cur_line = next_line ? (next_line+1) : NULL;
 
     }
            
@@ -157,11 +167,14 @@ void exec_program() {
 
 void process_line(char* line) {
 
-     //Transformo esa entrada a doubles, en matrix_size pongo la dimensión de la matriz (sabiendo que es nxn)
+     //Transformo esa entrada a doubles, 
+     //en matrix_size pongo la dimensión 
+     //de la matriz (sabiendo que es nxn)
     size_t matrix_size;
     double* matrixes = parse(line, &matrix_size);
     
-    //Extraigo la matriz 1 y la matriz 2 de la tira de doubles parseada
+    //Extraigo la matriz 1 y la matriz 2 
+    //de la tira de doubles parseada
     double* matrix1 = extract_matrix(matrixes, matrix_size, 0);
     double* matrix2 = extract_matrix(matrixes, matrix_size, 1);
 
@@ -222,7 +235,6 @@ char* read_from_stdin(size_t* size)
 double* parse(char* string_read, size_t* matrix_size) {
 
     //cantidad de matrices en el string.
-    //TODO - evaluar si tal vez este dato podría venir esto por param.
     int matrix_count = 2;
 
     //Puntero en el que se almacena cada caracter leído.
@@ -238,7 +250,8 @@ double* parse(char* string_read, size_t* matrix_size) {
         int n = (*matrix_size)*(*matrix_size)*matrix_count;
         matrixes = malloc(n*sizeof(double));
 
-        //declaro un iterador entero para significar los índices del array de resultado.
+        //declaro un iterador entero para significar 
+	//los índices del array de resultado.
         int iterator = 0;
 
         while ( (p = strtok(NULL, " ")) != NULL)
@@ -251,9 +264,6 @@ double* parse(char* string_read, size_t* matrix_size) {
                 matrixes[iterator] = matrix_valueij;
                 iterator++;
             } else {
-                //Fix para cuando atof devuelve 0 (supuestamente el valor 0 está reservado para cuando falla.. a excepción que el valor
-                // a parsear sea 0, entonces parece que falló cuando en realidad no.)
-                //--------- TODO VER SI SE PUEDE MEJORAR.
                 if(strcmp(p, "0")==0){
                     matrixes[iterator] = matrix_valueij;
                     iterator++;
@@ -277,7 +287,10 @@ double* parse(char* string_read, size_t* matrix_size) {
 }
 
 
-double* extract_matrix(double* array_matrixes, size_t matrix_size, size_t matrix_num) {
+double* extract_matrix(
+	double* array_matrixes, 
+	size_t matrix_size, 
+	size_t matrix_num) {
     
     int i;
     
