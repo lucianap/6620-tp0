@@ -40,10 +40,34 @@ void destroy_matrix(matrix_t* m);
 int print_matrix(FILE* fp, matrix_t* m);
 
 // Multiplica las matrices en m1 y m2
+/*
+PRE: Recibe dos punteros a matrices (matrix_t *)
+POST: Multiplica las matrices recibidas, y devuelve 
+una nueva matriz, almacenada en memoria dinamica.
+Queda a responsabilidad del usuario liberar esta 
+memoria por medio de sus destructor.
+Devuelve NULL en caso de error.
+*/
 matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2);
 
+// Devuelve un arreglo de con los elementos en 
+// orden de la fila n
+/*
+PRE: Recibe un puntero a una matriz (matrix_t *), 
+y el indice de una fila en la misma. 
+POST: Devuelve un arreglo dinamico con los elementos 
+de la fila n (double *), de la matriz recibida.
+*/
 double * matrix_get_row(matrix_t* m,size_t row_n);
 
+// Devuelve un arreglo de con los elementos en 
+// orden de la columna n
+/*
+PRE: Recibe un puntero a una matriz (matrix_t *), 
+y el indice de una columna en la misma. 
+POST: Devuelve un arreglo dinamico con los elementos 
+de la columnas n (double *), de la matriz recibida.
+*/
 double * matrix_get_col(matrix_t* m,size_t col_n);
 
 #endif // __MATRIX_H

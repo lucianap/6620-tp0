@@ -1,37 +1,79 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-//Utilizo header, por problema de deficiones multiples
-#include "matrix.h" 
-#include "testing.h"
 
-//Lee del standar input una cadena de longitud variable y la devuelve.
-//Almacena el tamaño total del buffer de la cadena en size.
+#include "matrix.h" 
+
+// Lee lineas de la entrada estandard
+/*
+PRE: Recibe un puntero a un numero (size_t *).
+POST: Lee de la entrada estandar lineas (hasta 
+encontrar un \n; y termina al encontrar un EOF), 
+y la devuelve (char *), almacenando su longitud 
+la variable size, recibida por parametro.
+Queda a responsabilidad del usuario liberar la 
+memoria reservada, por medio de la funcion free.
+*/
 char* read_from_stdin(size_t* size);
 
-//Devuelve las matrices como un array de doubles, pone el tamaño de las matrices en la variable matrixSize.
-//  Formato esperado: TamañoMatriz a11 .... ann b11 .... bnn
-//  Ejemplo: 2 1.1 2.7 3 4.3 1.23 6 12 1
-//Casos de error:
-//  1: tamaño de las matrices inválido: se pone un número no entero como tamaño
-//  2: valores inválidos: solo se aceptan floats en notación científica.
-//  3: tamaño de la matrix inválido: alguna de las matrices no tiene el tamaño especificado.
-//Si ocurre alguno de los casos mencionados se termina la ejecución del programa.
+// Parsea una cadena de matrices, a un arreglo de 
+// matrices
+/*
+PRE : Recibe una cadena con matrices cuadradas 
+en el formato :
+N a11 .... ann b11 .... bnn, 
+donde N es la dimension esta matrices, tal que,
+NxN.
+POST: Devuelve un arreglo de numero (double *), 
+con los elementos de la primer matriz, seguidos 
+de los elementos de la segunda.
+Ademas almacena en matrix_size el la dimension
+de la matriz.
+*/
 double* parse(char* string_matrixes, size_t* matrix_size);
 
-//Extrae la matriz [matrixNum] del array parseado.
-//Solo se admite matrixNum = 0 (primera matriz) o matrixNum = 1 (segunda matriz)
+// Extrae un arreglo de elementos de una la matriz
+// desde un arreglo de elementos para dos matrices
+/*
+PRE : Recibe:
+    un arreglo con los elementos de dos matrices 
+    cuadradas, unos seguidos de los otros.
+    la dimension (de lado) de estas matrices
+    y un numero:
+        0 : para referirse a la primer matriz
+        1 : para referirse a la segunda matriz
+POST: Devuelve un arreglo con los elementos de la 
+matriz seleccionada (0 o 1).
+Queda a responsabilidad del usuario liberar la memoria
+reservada por medio de la funcion free.
+*/
 double* extract_matrix(double* array_matrixes, size_t matrix_size, size_t matrix_num);
 
-//Loguea un mensaje por stderr y sale de la aplicación.
+// Loguea un mensaje por stderr y sale de la aplicacion.
+/*
+PRE: Recibe un codigo de error (int)
+POST: Imprime por salida de error estandar, un mensaje
+descriptivo para el error en cuestion, y termina la 
+ejecucion del programa.
+*/
 void logAndExit(int error_code);
 
-//Ejecuta el programa principal de multiplicación de matrices.
+// Ejecuta el programa de desde el parseo de la 
+// entrada estandar, la multiplicacion de 
+// matrices cuadradas y la impresion del resultado.
 void exec_program();
 
-//Procesador línea por línea.
+//Procesa lineas de mutliplicacion de matrices
+/*
+PRE: Recibe una linea correspondiente a dos matrices 
+a multiplicar.
+POST: Procesa la linea, realizando la multiplicacion,
+e imprimiendo el resultado por entrada estandard.
+*/
 void process_line(char* line); 
 
+// Imprime por salida estandard, la distintas
+// formas de ejecutar el programa
 void show_help() {
 
     char buffer[512];
@@ -53,10 +95,14 @@ void show_help() {
 
 }
 
+// Imprime la version del programa
 void version() {
 	printf("%s", "tp0 version 1.0\n");
 }
 
+// Procesa los argumentos del programa para
+// mostrar ayuda, version o ejecutar el programa
+// dependiendo del caso.
 int main( int argc, const char* argv[] ) {
     if(argc > 1) {
 		int i;
@@ -78,6 +124,11 @@ int main( int argc, const char* argv[] ) {
     return 0;
 }
 
+// Ejecuta el programa de desde el parseo de la 
+// entrada estandar, la multiplicacion de  matrices 
+// cuadradas y la impresion del resultado.
+// (Para todas las lineas de multiplicacion de 
+// matrices recibidas por entrada estandard)
 void exec_program() {
 
     //Leo de std in la entrada de caracteres.
@@ -103,7 +154,6 @@ void exec_program() {
     free(string_read);
 
 }
-
 
 void process_line(char* line) {
 
