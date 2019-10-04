@@ -65,7 +65,7 @@ matrix_multiply:
 	jal ra, t9
 	move a3, v0		# a3 = v0 = ptr array
 	beq a3, -1, array_malloc_error
-	sw a3, (TAM_STACK_FRAME + 12)($fp)		# ptr array 
+	sw a3, (TAM_STACK_FRAME + 12)($fp)		# ptr array # no es necesaria esta linea
 
 	# Recuperamos registros que pudieran perderse
 	lw a0, (TAM_STACK_FRAME)($fp)
