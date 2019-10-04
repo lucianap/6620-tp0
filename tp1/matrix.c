@@ -104,6 +104,7 @@ Queda a responsabilidad del usuario liberar esta
 memoria por medio de sus destructor.
 Devuelve NULL en caso de error.
 */
+/*
 matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
 
     if (m1 == NULL || m2 == NULL){
@@ -154,4 +155,4 @@ matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
     new_matrix->array = array_nm;
     return new_matrix;
 }
-
+*/

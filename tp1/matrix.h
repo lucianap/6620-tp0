@@ -48,7 +48,7 @@ Queda a responsabilidad del usuario liberar esta
 memoria por medio de sus destructor.
 Devuelve NULL en caso de error.
 */
-matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2);
+extern matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2);
 
 // Devuelve un arreglo de con los elementos en 
 // orden de la fila n
@@ -70,5 +70,13 @@ de la columnas n (double *), de la matriz recibida.
 */
 double * matrix_get_col(matrix_t* m,size_t col_n);
 
-#endif // __MATRIX_H
+// Destruye una matriz creada en MIPS
+/*
+PRE: Recibe una matriz (matrix_t*) creada por la 
+funcion matrix_multiply.
+POST: Destruye la matriz.
+*/
+extern void mips_matrix_destroy(matrix_t* m);
+
+#endif // __MATRIX__H
 

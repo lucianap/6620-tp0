@@ -192,6 +192,7 @@ void process_line(char* line) {
 
     destroy_matrix(matrix_one);
     destroy_matrix(matrix_two);
+    mips_matrix_destroy(final_matrix);
     free(matrixes);
 }
 
@@ -244,7 +245,7 @@ double* parse(char* string_read, size_t* matrix_size) {
     double* matrixes = NULL;
 
     //Primer caracter: tamaño de las matrices
-    if((*matrix_size) = atoi(p)){
+    if ( ((*matrix_size) = atoi(p)) ) {
 
         //aloco memoria para las matrices
         int n = (*matrix_size)*(*matrix_size)*matrix_count;
@@ -260,7 +261,7 @@ double* parse(char* string_read, size_t* matrix_size) {
             //valor parseado del string
             double matrix_valueij;
 
-            if(matrix_valueij = atof(p)){
+            if ( (matrix_valueij = atof(p)) ){
                 matrixes[iterator] = matrix_valueij;
                 iterator++;
             } else {
