@@ -38,28 +38,23 @@ matrix_multiply:
 	# de myalloc y myfree
 
 	# Creamos matriz nueva
-	# Reservamos memoria para la estructura matrix_t
-	li a0, 12	# 4 (rows, size_t) + 4 (cols, size_t) + 4 (array, ptr)	
-	la t9, mymalloc
+	move t0, a0		# t1 = a0 = matrix_1 
+	lw a0, (t0)		# a0 = matrix_1->rows
+	lw a1, 4(t0)	# a1 = matrix_1->cols
+	la t9, create_matrix
 	jal ra, t9
 	move a2, v0		# a2 = v0 = new_matrix (ptr)
-	beq a2, -1, matrix_multiply_error
-	sw a2, (TAM_STACK_FRAME + 8)($fp)		# ptr new_matrix
+	beq a2, 0, matrix_multiply_error		# new_matrix == NULL
+	sw a2, (TAM_STACK_FRAME + 8)($fp)		# ptr new_matrix (Guardo por si acaso)
 
 	# Recuperamos registros que pudieran perderse
-	lw a0, (TAM_STACK_FRAME)($fp)
-	lw a1, (TAM_STACK_FRAME + 4)($fp)
-
-	# Inicializamos new_matrix 
-	lw t0, (a0)		# t0 = matrix_1->rows
-	sw t0, 0(a2)	# new_matrix->rows = t0 = matrix_1->rows
-	sw t0, 4(a2)	# new_matrix->cols = t0 = matrix_1->rows
-	addi t1, zero, -1	# t1 = -1
-	sw t1, 8(a2)	# new_matrix->array = t1 = -1 (por defecto)
+	lw a0, (TAM_STACK_FRAME)($fp)		# a0 = matrix_1
+	lw a1, (TAM_STACK_FRAME + 4)($fp)	# a1 = matrix_2
 
 	# Reservamos memoria para new_matrix->array
-	mul t2, t0, t0	# t2 = t0 * t0 = matrix_1->rows * matrix_1->rows = cantidad posiciones array
-	sll t2, t2, 3		# Multiplico por 8 = 2^3, pues son doubles => cantidad bytes en array
+	lw t0, (a2)		# t0 = new_matrix->rows
+	mul t2, t0, t0	# t2 = t0 * t0 = new_matrix->rows * new_matrix->rows = cantidad posiciones array
+	sll t2, t2, 3	# Multiplico por 8 = 2^3, pues son doubles => cantidad bytes en array
 	move a0, t2
 	la t9, mymalloc
 	jal ra, t9

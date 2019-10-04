@@ -192,8 +192,8 @@ void process_line(char* line) {
 
     destroy_matrix(matrix_one);
     destroy_matrix(matrix_two);
-    mips_matrix_destroy(final_matrix);
-    free(matrixes);
+    destroy_matrix(final_matrix);
+    myfree(matrixes);
 }
 
 char* read_from_stdin(size_t* size)
@@ -249,10 +249,10 @@ double* parse(char* string_read, size_t* matrix_size) {
 
         //aloco memoria para las matrices
         int n = (*matrix_size)*(*matrix_size)*matrix_count;
-        matrixes = malloc(n*sizeof(double));
+        matrixes = mymalloc(n*sizeof(double));
 
         //declaro un iterador entero para significar 
-	//los índices del array de resultado.
+	    //los índices del array de resultado.
         int iterator = 0;
 
         while ( (p = strtok(NULL, " ")) != NULL)
@@ -299,7 +299,7 @@ double* extract_matrix(
         logAndExit(1);
     }
     
-    double* matrix_n = malloc(matrix_size*matrix_size*sizeof(double));
+    double* matrix_n = mymalloc(matrix_size*matrix_size*sizeof(double));
     int matrix_index = 0;
    
     for(i = 0; i < matrix_num; i++ ) {

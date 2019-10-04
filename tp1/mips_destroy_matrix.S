@@ -10,9 +10,9 @@
 	.align 2	# Alinea (solamente) la siguiente instruccion a 2 bytes
 
 	# Declaro y defino mi funcion
-	.globl mips_matrix_destroy	
-	.ent mips_matrix_destroy
-mips_matrix_destroy:
+	.globl destroy_matrix	
+	.ent destroy_matrix
+destroy_matrix:
     # Inicio Receta
 	
     .frame $fp, TAM_STACK_FRAME, ra
@@ -59,6 +59,6 @@ mips_matrix_destroy:
 	# Devuelvo control al SO, o a la Caller
 	jr ra
 
-	.end mips_matrix_destroy
+	.end destroy_matrix
 
 

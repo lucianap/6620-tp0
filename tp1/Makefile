@@ -1,13 +1,22 @@
 CC=gcc
 CFLAGS=-Wall -g
-tp1: main.c matrix.o matrix_multiply.o mips_destroy_matrix.o mymalloc.o
-	$(CC) $(CFLAGS) -o tp1 main.c matrix.o matrix_multiply.o mips_destroy_matrix.o mymalloc.o
+c_common: main.c print_matrix.o c_matrix.o  
+	$(CC) $(CFLAGS) -o tp1_c main.c print_matrix.o c_matrix.o
 
-matrix.o: matrix.c matrix.h 
-	$(CC) $(CFLAGS) -c matrix.c
+mips: main.c print_matrix.o matrix_multiply.o mips_destroy_matrix.o mips_create_matrix.o mymalloc.o
+	$(CC) $(CFLAGS) -o tp1_mips main.c print_matrix.o matrix_multiply.o mips_destroy_matrix.o mips_create_matrix.o mymalloc.o
+
+print_matrix.o: print_matrix.c matrix.h
+	$(CC) $(CFLAGS) -c print_matrix.c
+
+c_matrix.o: c_matrix.c matrix.h
+	$(CC) $(CFLAGS) -c c_matrix.c
 
 matrix_multiply.o:
 	$(CC) $(CFLAGS) -c matrix_multiply.S 
+
+mips_create_matrix.o:
+	$(CC) $(CFLAGS) -c mips_create_matrix.S 
 
 mips_destroy_matrix.o:
 	$(CC) $(CFLAGS) -c mips_destroy_matrix.S 
