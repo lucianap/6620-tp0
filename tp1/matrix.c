@@ -34,7 +34,7 @@ PRE: Recibe un puntero a una matriz (matrix_t *),
 y el indice de una fila en la misma.
 POST: Devuelve un arreglo dinamico con los elementos
 de la fila n (double *), de la matriz recibida.
-*/
+
 double * matrix_get_row(matrix_t* m,size_t row_n){
     double* l_row = malloc(sizeof(double) * m->rows);
     size_t i = 0;
@@ -43,7 +43,7 @@ double * matrix_get_row(matrix_t* m,size_t row_n){
     }
     return l_row;
 }
-
+*/
 // Devuelve un arreglo de con los elementos en 
 // orden de la columna n
 /*
