@@ -8,8 +8,8 @@
 .text
 .abicalls
 .align 2
-.global matrix_get_row
-.ent matrix_get_row
+.global matrix_get_col
+.ent matrix_get_col
 matrix_get_row:
 	.frame $fp,TAM_STACK_FRAME,ra
 	.set	noreorder
@@ -23,9 +23,9 @@ matrix_get_row:
 	move $fp,sp
 	
 	sw a0,TAM_STACK_FRAME($fp) #guardo el primer parametro (la matriz)
-	sw a1,(TAM_STACK_FRAME + 4)($fp) #guardo el segundo parametro (numero de fila)
+	sw a1,(TAM_STACK_FRAME + 4)($fp) #guardo el segundo parametro (numero de columna)
 	
-	lw a0,(a0)
+	lw a0,4(a0)
 	sll a0,a0,3
 	la t9,mymalloc
 	jal ra,t9
@@ -34,21 +34,20 @@ matrix_get_row:
 	
 	li t0,0
 	lw t1,TAM_STACK_FRAME ($fp) # t1 = struct matriz
-	lw t2,(t1) # t2 = cant de filas
-	lw t3,TAM_STACK_FRAME + 4($fp) #Obtengo numero de fila
-	lw t6,8(t1) #t6 = array matrix
-	mul t4, t3, t2 # m->rows * row_n	
+	lw t2,4(t1) # t2 = cant de cols
+	lw t3,TAM_STACK_FRAME + 4($fp) #Obtengo numero de col
+	lw t4,8(t1) #t4 = array matrix
 	move a2,v0
 
 loop:
 	bgt t0,t2,exit
-	addu t5,t4,t0 # (m->rows * row_n) + i
-	sll t5,t5,3
-	addu t7,t6,t5 # * matriz[(m->rows * row_n) + i]
-	l.d $f0,(t7)  # matriz[(m->rows * row_n) + i]
-	sll t8,t0,3  # Aumento 8 bites al index del array
-	addu t5,a2,t8
-	s.d $f0,(t5)
+	sll t3,t3,3
+	addu t6,t4,t5 # * matriz[pos]
+	l.d $f0,(t6)  # matriz[pos]
+	sll t7,t0,3  # Aumento 8 bites al index del array
+	addu t8,a2,t7
+	s.d $f0,(t8)
+	addu t3,t3,t2
 	addu t0,t0,1
 	b loop
 
@@ -64,4 +63,4 @@ exit:
 	addu sp, sp, TAM_STACK_FRAME
 	jr ra
 	
-.end matrix_get_row
+.end matrix_get_col
