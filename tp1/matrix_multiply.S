@@ -1,10 +1,18 @@
 #include <mips/regdef.h>
 #include <sys/syscall.h>
-#define TAM_STACK_FRAME 40
-#define OFFSET_F0 16
-#define OFFSET_GP 24
-#define OFFSET_FP 28
-#define OFFSET_RA 32
+#define TAM_STACK_FRAME 64
+#define OFFSET_F0 40
+#define OFFSET_GP 48
+#define OFFSET_FP 52
+#define OFFSET_RA 56
+#define OFFSET_S1 60
+
+#define OFFSET_T0 16
+#define OFFSET_T1 20
+#define OFFSET_T2 24
+#define OFFSET_T3 28
+#define OFFSET_T4 32
+#define OFFSET_T5 36
 
 	.text	# texto a continuacion
 	.abicalls	# Vamos a respetar las convenciones
@@ -28,6 +36,7 @@ matrix_multiply:
 	move $fp, sp
 	sw a0, TAM_STACK_FRAME($fp)	# ptr matrix_1
 	sw a1, (TAM_STACK_FRAME + 4)($fp) # ptr matrix_2
+	sw s1, OFFSET_S1($fp) #guardo este registro por convención
 	
     # Fin receta
 
@@ -60,7 +69,7 @@ matrix_multiply:
 	jal ra, t9
 	move a3, v0		# a3 = v0 = ptr array
 	beq a3, -1, array_malloc_error
-	sw a3, (TAM_STACK_FRAME + 12)($fp)		# ptr array # no es necesaria esta linea
+	sw a3, (TAM_STACK_FRAME + 12)($fp)		# ptr array 
 
 	# Recuperamos registros que pudieran perderse
 	lw a0, (TAM_STACK_FRAME)($fp)
@@ -72,48 +81,65 @@ matrix_multiply:
 	sw a3, 8(a2)	# new_matrix->array = a3 = ptr array
 	 
 	lw t0, (a0)			# t0 = matrix_1->rows
-	mul t2, t0, t0	 	# t2 = t1 * t1 = matrix_1->rows * matrix_1->rows = cantidad posiciones array
-	sll t2, t2, 3		# Multiplico por 8, pues son doubles => cantidad bytes en array
-	addu t2, t2, a3		# t2 = byte siguiente al ultimo byte de new_matrix->array
-	move t3, a3			# t3 = ptr new_matrix->array = primer byte de new_matrix->array
-
-	lw t5, 8(a0) 		# t5 = ptr a m1->array
-	lw t6, 8(a1)		# t6 = ptr a m2->array
 
 	#Construyo iteradores
 	and t3, t3, zero
-	and t4, t4, zero
-	and t5, t5, zero
+	and s1, s1, zero #iterador de posición dentro de la matriz.
+	
 
 i_loop:
 	beq t0, t3, end_matrix_multiply # t3 = i
-	#move a0, a0
-	#move a1, t3 
-	#la t9, get_row					# get_row(m1, i) -> get_row(t5,t4)
-	#jal t9
+
+	#Guardo el estado de los ts en el stack
+	sw t0, OFFSET_T0($fp)
+	sw t3, OFFSET_T3($fp)
+	
+	move a0, a0
+	move a1, t3 
+	la t9, matrix_get_row					# get_row(m1, i) -> get_row(t5,t4)
+	jal t9
 						
 	# Recuperamos registros que pudieran perderse
 	lw a0, (TAM_STACK_FRAME)($fp)
 	lw a1, (TAM_STACK_FRAME + 4)($fp)
 	lw a2, (TAM_STACK_FRAME + 8)($fp)
+	lw a3, (TAM_STACK_FRAME + 12)($fp)
+	lw t0, OFFSET_T0($fp)
+	lw t3, OFFSET_T3($fp)
 
-	#move v0, t1					# salvo el resultado de get_row	
-	lw t1, 8(a0) #simulo el resultado de get_row (ptr a fila)
+	move t1, v0					# salvo el resultado de get_row	
 
+	and t4, t4, zero			# iterador t4
+	
 j_loop:
 	beq t0, t4, end_j_loop	# t4 = j
-	#move a0, a1
-	#move a1, t4
-	#la t9, get_col
-	#jal t9
+	
+	sw t0, OFFSET_T0($fp)
+	sw t1, OFFSET_T1($fp)
+	sw t2, OFFSET_T2($fp)
+	sw t3, OFFSET_T3($fp)
+	sw t4, OFFSET_T4($fp)
+	
+	#preparo argumentos y llamo a funcion
+	move a0, a1
+	move a1, t4
+	la t9, matrix_get_col
+	jal t9
 
 	# Recuperamos registros que pudieran perderse
 	lw a0, (TAM_STACK_FRAME)($fp)
 	lw a1, (TAM_STACK_FRAME + 4)($fp)
 	lw a2, (TAM_STACK_FRAME + 8)($fp)
+	lw a3, (TAM_STACK_FRAME + 12)($fp)
+	lw t0, OFFSET_T0($fp)
+	lw t1, OFFSET_T1($fp)
+	lw t2, OFFSET_T2($fp)
+	lw t3, OFFSET_T3($fp)
+	lw t4, OFFSET_T4($fp)
 
-	#move v0, t2					# salvo el resultado de get_col
-	lw t2, 8(a1) #simulo el resultado de get_row
+	move t2, v0					# salvo el resultado de get_col
+
+	and t5, t5, zero			# iterador t5
 
 k_loop:
 	beq t0, t5, end_k_loop #t5 = k
@@ -136,16 +162,19 @@ k_loop:
 	b k_loop
 
 end_k_loop:
-	addiu t4, t4, 1
-	b j_loop
 
-end_j_loop:
 	#Coloco el numero calculado en su posicion final en la matriz a3
-	sll t7, t3, 3					# escalo el iterador i
+	sll t7, s1, 3					# escalo el iterador i
 	move t8, a3						# muevo t8 al inicio de a3 = ptr new matrix
 	addu t7, t7, t8					# avanzo t7 bytes t8 y lo guardo en t7
 	s.d $f4, (t7) 					# store del resultado en new matrix
 	li.d $f4, 0 					# reset del acumulador
+	addiu s1, s1, 1
+
+	addiu t4, t4, 1
+	b j_loop
+
+end_j_loop:
 	addiu t3, t3, 1					# avanzo t3 una posición
 	b i_loop
 
@@ -168,6 +197,7 @@ end_matrix_multiply:
 	move v0, a2 
 
 	# Restauro registros ABI
+	lw s1, OFFSET_S1(sp)
 	lw gp, OFFSET_GP(sp)
 	lw $fp, OFFSET_FP(sp)
 	lw ra, OFFSET_RA(sp)
