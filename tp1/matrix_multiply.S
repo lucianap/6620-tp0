@@ -70,19 +70,85 @@ matrix_multiply:
 
 	# Asignamos array a new_matrix
 	sw a3, 8(a2)	# new_matrix->array = a3 = ptr array
-	
-	# Queremos llenar la matriz con 10s (dieces) 
+	 
 	lw t0, (a0)			# t0 = matrix_1->rows
 	mul t2, t0, t0	 	# t2 = t1 * t1 = matrix_1->rows * matrix_1->rows = cantidad posiciones array
 	sll t2, t2, 3		# Multiplico por 8, pues son doubles => cantidad bytes en array
 	addu t2, t2, a3		# t2 = byte siguiente al ultimo byte de new_matrix->array
 	move t3, a3			# t3 = ptr new_matrix->array = primer byte de new_matrix->array
-fill_loop:
-	beq t2, t3, end_matrix_multiply
-	li.d $f0, 10			# t4 = 10
-	s.d $f0, (t3)		# new_matrix->array[i] = (t2) = t3 = 1
-	addiu t3, t3, 8		# t2 = t2 + mips_sizeof(double) = t2 + 8 = byte inicial al siguiente double
-	b fill_loop
+
+	lw t5, 8(a0) 		# t5 = ptr a m1->array
+	lw t6, 8(a1)		# t6 = ptr a m2->array
+
+	#Construyo iteradores
+	and t3, t3, zero
+	and t4, t4, zero
+	and t5, t5, zero
+
+i_loop:
+	beq t0, t3, end_matrix_multiply # t3 = i
+	#move a0, a0
+	#move a1, t3 
+	#la t9, get_row					# get_row(m1, i) -> get_row(t5,t4)
+	#jal t9
+						
+	# Recuperamos registros que pudieran perderse
+	lw a0, (TAM_STACK_FRAME)($fp)
+	lw a1, (TAM_STACK_FRAME + 4)($fp)
+	lw a2, (TAM_STACK_FRAME + 8)($fp)
+
+	#move v0, t1					# salvo el resultado de get_row	
+	lw t1, 8(a0) #simulo el resultado de get_row (ptr a fila)
+
+j_loop:
+	beq t0, t4, end_j_loop	# t4 = j
+	#move a0, a1
+	#move a1, t4
+	#la t9, get_col
+	#jal t9
+
+	# Recuperamos registros que pudieran perderse
+	lw a0, (TAM_STACK_FRAME)($fp)
+	lw a1, (TAM_STACK_FRAME + 4)($fp)
+	lw a2, (TAM_STACK_FRAME + 8)($fp)
+
+	#move v0, t2					# salvo el resultado de get_col
+	lw t2, 8(a1) #simulo el resultado de get_row
+
+k_loop:
+	beq t0, t5, end_k_loop #t5 = k
+
+	#obtengo actual_col[k]
+	sll t6, t5, 3
+	addu t6, t6, t1
+	l.d $f0, (t6)
+
+	#obtengo actual_row[k]
+	sll t6, t5, 3
+	addu t6, t6, t2
+	l.d $f2, (t6)
+
+	#sumo y acumulo
+	mul.d $f6, $f0, $f2
+	add.d $f4, $f4, $f6			    # acumulo en f4 
+
+	addiu t5, t5, 1					# avanzo t5
+	b k_loop
+
+end_k_loop:
+	addiu t4, t4, 1
+	b j_loop
+
+end_j_loop:
+	#Coloco el numero calculado en su posicion final en la matriz a3
+	sll t7, t3, 3					# escalo el iterador i
+	move t8, a3						# muevo t8 al inicio de a3 = ptr new matrix
+	addu t7, t7, t8					# avanzo t7 bytes t8 y lo guardo en t7
+	s.d $f4, (t7) 					# store del resultado en new matrix
+	li.d $f4, 0 					# reset del acumulador
+	addiu t3, t3, 1					# avanzo t3 una posición
+	b i_loop
+
 
 array_malloc_error:
 	lw a0, (TAM_STACK_FRAME + 8)($fp)	# ptr new_matrix
@@ -98,6 +164,9 @@ matrix_multiply_error:
 
 # Finalizo la rutina
 end_matrix_multiply:
+	#coloco el resultado en v0
+	move v0, a2 
+
 	# Restauro registros ABI
 	lw gp, OFFSET_GP(sp)
 	lw $fp, OFFSET_FP(sp)
@@ -111,5 +180,7 @@ end_matrix_multiply:
 	jr ra
 
 	.end matrix_multiply
+
+
 
 
