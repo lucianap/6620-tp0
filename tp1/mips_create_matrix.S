@@ -41,7 +41,7 @@ create_matrix:
 	jal ra, t9
 	move a2, v0		# a2 = v0 = new_matrix (ptr)
 	beq a2, -1, create_matrix_error			
-	sw a2, (TAM_STACK_FRAME + 8)($fp)	# ptr new_matrix
+	sw a2, (TAM_STACK_FRAME + 8)($fp) # ptr new_matrix
 
 	# Recuperamos registros que pudieran perderse
 	lw a0, (TAM_STACK_FRAME)($fp)
@@ -51,11 +51,13 @@ create_matrix:
 	sw a0, 0(a2)	# new_matrix->rows = a0 = rows
 	sw a1, 4(a2)	# new_matrix->cols = a1 = cols
 	li t0, 0		# t0 = 0
-	sw t0, 8(a2)	# new_matrix->array = t0 = 0 (por defecto)
+	sw t0, 8(a2)	# new_matrix->array = t0 = 0 
+					# (por defecto)
 
 	# Retornamos matrix creada
 	move v0, a2			# v0 = a2 = new_matrix (ptr) 
-						# (guardo valor en registro retorno)
+						# (guardo valor en registro 
+						# retorno)
 	b end_create_matrix
 
 create_matrix_error:

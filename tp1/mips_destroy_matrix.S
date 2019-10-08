@@ -7,7 +7,14 @@
 
 	.text	# texto a continuacion
 	.abicalls	# Vamos a respetar las convenciones
-	.align 2	# Alinea (solamente) la siguiente instruccion a 2 bytes
+	.align 2	# Alinea (solamente) la siguiente 
+				# instruccion a 2 bytes
+
+	# PRE: Recibe un ptr a matrix_t creado por 
+	# create_matrix, cuyo arreglo de elementos 
+	# esta almacenado en el heap a traves de la 
+	# funcion mymalloc
+	# POST: Destruye la matrix y libera el su arreglo
 
 	# Declaro y defino mi funcion
 	.globl destroy_matrix	
@@ -24,16 +31,16 @@ destroy_matrix:
 	sw $fp, OFFSET_FP(sp)
 	sw ra, OFFSET_RA(sp)
 	move $fp, sp
-	sw a0, TAM_STACK_FRAME($fp)	
-	# ptr matrix_t creada en mips por matrix_multiply
+	sw a0, TAM_STACK_FRAME($fp)	# ptr matrix_t 
 	
     # Fin receta
 
 	# Inicio codigo de la funcion
 	# Libero matrix->array
 	lw a0, 8(a0)	
-	# a0 es ptr a matrix, 8(a0) es el contenido de lo que 
-	# hay a 8 bytes de a0, que es un ptr array
+	# a0 es ptr a matrix, 8(a0) es el contenido 
+	# de lo que hay a 8 bytes de a0, que es un 
+	# ptr array
 	la t9, myfree
 	jal ra, t9
 
@@ -56,9 +63,8 @@ destroy_matrix:
 	# Destruyo Stack Frame
 	addu sp, sp, TAM_STACK_FRAME
 
-	# Devuelvo control al SO, o a la Caller
+	# Devuelvo control al SO, 
+	# o a la Caller
 	jr ra
 
 	.end destroy_matrix
-
-
