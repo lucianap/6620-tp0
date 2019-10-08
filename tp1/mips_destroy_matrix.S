@@ -39,7 +39,7 @@ destroy_matrix:
 	# Inicio codigo de la funcion
 	# Libero matrix->array
 	lw a0, 8(a0)	# a0 = matrix->array
-	beq a0, 0, continuar_destruir	# a0 == 0 ?
+	ble a0, 0, continuar_destruir	# a0 <= 0 ?
 	la t9, myfree
 	jal ra, t9
 continuar_destruir:

@@ -45,7 +45,7 @@ create_matrix:
 	la t9, mymalloc
 	jal ra, t9
 	move a2, v0		# a2 = v0 = new_matrix (ptr)
-	beq a2, -1, create_matrix_error			
+	ble a2, 0, create_matrix_error			
 	sw a2, (TAM_STACK_FRAME + 8)($fp) # ptr new_matrix
 
 	# Recuperamos registros que pudieran perderse
@@ -66,7 +66,7 @@ create_matrix:
 	b end_create_matrix
 
 create_matrix_error:
-	li v0, -1		# Codigo error
+	li v0, 0	# Codigo error
 	b end_create_matrix
 
 # Fin codigo de la funcion

@@ -1,4 +1,5 @@
 #include "matrix.h"
+#include "mymalloc.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -120,23 +121,15 @@ matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
             double aux = 0;
             size_t x = 0;
             for(; x < rows_m1; ++x){
-                    aux = aux + actual_col[x] * actual_row[x];
-                }
-                array_nm[position] = aux;
-                position++;
-                myfree(actual_col);
+                aux = aux + actual_col[x] * actual_row[x];
             }
-            myfree(actual_row);
+            array_nm[position] = aux;
+            position++;
+            myfree(actual_col);
+        }
+        myfree(actual_row); 
     }
 
     new_matrix->array = array_nm;
     return new_matrix;
-}
-
-void *mymalloc(size_t s){
-    return malloc(s);
-}
-
-void myfree(void * ptr){
-    free(ptr);
 }

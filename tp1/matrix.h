@@ -70,9 +70,5 @@ de la columnas n (double *), de la matriz recibida.
 */
 extern double * matrix_get_col(matrix_t* m,size_t col_n);
 
-extern void *mymalloc(size_t s);
-
-extern void myfree(void * ptr);
-
 #endif // __MATRIX__H
 

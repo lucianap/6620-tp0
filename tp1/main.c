@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "matrix.h" 
+#include "mymalloc.h"
 
 // Lee lineas de la entrada estandard
 /*

@@ -1,10 +1,13 @@
 CC=gcc
 CFLAGS=-Wall -g
-c_common: main.c print_matrix.o c_matrix.o
-	$(CC) $(CFLAGS) -o tp1_c main.c print_matrix.o c_matrix.o
+c_common: main.c print_matrix.o c_matrix.o mymalloc_2.o
+	$(CC) $(CFLAGS) -o tp1_c main.c print_matrix.o c_matrix.o mymalloc_2.o
 
-mips: main.c print_matrix.o matrix_multiply.o mips_destroy_matrix.o mips_create_matrix.o mips_matrix_get_row.o mips_matrix_get_col.o mymalloc.o
-	$(CC) $(CFLAGS) -o tp1_mips main.c print_matrix.o matrix_multiply.o mips_destroy_matrix.o mips_create_matrix.o mips_matrix_get_row.o mips_matrix_get_col.o mymalloc.o
+mips_malloc_c: main.c print_matrix.o matrix_multiply.o mips_destroy_matrix.o mips_create_matrix.o mips_matrix_get_row.o mips_matrix_get_col.o mymalloc_2.o
+	$(CC) $(CFLAGS) -o tp1_mips_malloc_c main.c print_matrix.o matrix_multiply.o mips_destroy_matrix.o mips_create_matrix.o mips_matrix_get_row.o mips_matrix_get_col.o mymalloc_2.o
+
+mips_malloc_catedra: main.c print_matrix.o matrix_multiply.o mips_destroy_matrix.o mips_create_matrix.o mips_matrix_get_row.o mips_matrix_get_col.o mymalloc.o
+	$(CC) $(CFLAGS) -o tp1_mips_malloc_catedra main.c print_matrix.o matrix_multiply.o mips_destroy_matrix.o mips_create_matrix.o mips_matrix_get_row.o mips_matrix_get_col.o mymalloc.o
 
 print_matrix.o: print_matrix.c matrix.h
 	$(CC) $(CFLAGS) -c print_matrix.c
@@ -29,6 +32,9 @@ mips_matrix_get_col.o:
 
 mymalloc.o:
 	$(CC) $(CFLAGS) -c mymalloc.S
+
+mymalloc_2.o: mymalloc_2.c mymalloc.h
+	$(CC) $(CFLAGS) -c mymalloc_2.c
 
 .PHONY: clean
 clean:
