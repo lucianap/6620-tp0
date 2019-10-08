@@ -15,7 +15,7 @@
 // Si la puntero devuelto es NULL, implica que 
 // ocurrio un error.
 matrix_t* create_matrix(size_t rows, size_t cols) {
-    matrix_t * new_matrix = malloc(sizeof(matrix_t));
+    matrix_t * new_matrix = mymalloc(sizeof(matrix_t));
     if (new_matrix == NULL){
         return NULL;
     }
@@ -32,9 +32,9 @@ matrix_t* create_matrix(size_t rows, size_t cols) {
 // POST: Destruye la matriz recibida.
 void destroy_matrix(matrix_t* m) {
     if (m->array != NULL){
-        free(m->array);
+        myfree(m->array);
     }
-    free(m);
+    myfree(m);
 }
 
 // Devuelve un arreglo de con los elementos en
@@ -46,7 +46,7 @@ POST: Devuelve un arreglo dinamico con los elementos
 de la fila n (double *), de la matriz recibida.
 */
 double * matrix_get_row(matrix_t* m,size_t row_n){
-    double* l_row = malloc(sizeof(double) * m->rows);
+    double* l_row = mymalloc(sizeof(double) * m->rows);
     size_t i = 0;
     for (; i < m->rows;++i){
         l_row[i] = m->array[i + (row_n * m->rows)];
@@ -63,7 +63,7 @@ POST: Devuelve un arreglo dinamico con los elementos
 de la columnas n (double *), de la matriz recibida.
 */
 double * matrix_get_col(matrix_t* m,size_t col_n){
-    double* l_col= malloc(sizeof(double) * m->cols);
+    double* l_col= mymalloc(sizeof(double) * m->cols);
     size_t pos = col_n;
     size_t i = 0;
     for (; i < m->cols;++i){
@@ -108,25 +108,25 @@ matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
         return NULL;
     }
 
-    double * array_nm = malloc(sizeof(double)*rows_m1*rows_m1);
+    double * array_nm = mymalloc(sizeof(double)*rows_m1*rows_m1);
     size_t position = 0;
 
     size_t i = 0;
     for(; i < rows_m1;++i){
         double * actual_row = matrix_get_row(m1,i);
         size_t j = 0;
-    for(; j < rows_m1; ++j){
+        for(; j < rows_m1; ++j){
             double * actual_col = matrix_get_col(m2,j);
             double aux = 0;
             size_t x = 0;
-        for(; x < rows_m1; ++x){
-                aux = aux + actual_col[x] * actual_row[x];
+            for(; x < rows_m1; ++x){
+                    aux = aux + actual_col[x] * actual_row[x];
+                }
+                array_nm[position] = aux;
+                position++;
+                myfree(actual_col);
             }
-            array_nm[position] = aux;
-            position++;
-            free(actual_col);
-        }
-        free(actual_row);
+            myfree(actual_row);
     }
 
     new_matrix->array = array_nm;

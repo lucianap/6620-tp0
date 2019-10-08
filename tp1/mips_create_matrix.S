@@ -10,6 +10,11 @@
 	.align 2	# Alinea (solamente) la siguiente 
 				# instruccion a 2 bytes
 
+	# PRE: Recibe la cantidad de filas y columnas de 
+	# la matriz a traves de a0 y a1.
+	# POST: Devuelve un puntero a un nueva matriz de 
+	# dichas dimensiones, o 0 en caso de error.
+
 	# Declaro y defino mi funcion
 	.globl create_matrix	
 	.ent create_matrix

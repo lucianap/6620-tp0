@@ -1,13 +1,20 @@
 #include <mips/regdef.h>
 #include <sys/syscall.h>
-#define TAM_STACK_FRAME 40
-#define OFFSET_F0 16
-#define OFFSET_GP 24
-#define OFFSET_FP 28
-#define OFFSET_RA 32
+#define TAM_STACK_FRAME 32
+#define OFFSET_GP 16
+#define OFFSET_FP 20
+#define OFFSET_RA 24
 	.text
 	.abicalls
 	.align 2
+
+	# PRE: Recibe un puntero a matrix_t y 
+	# un numero de columna valido en la matriz
+	# POST: Devuelve un arreglo de doubles con 
+	# elementos de la columna seleccionada 
+	# almacenados en el heap
+	# Queda a responsabilidad del usuario, liberar
+	# dicha memoria mediante la rutina myfree
 
 	.globl matrix_get_col
 	.ent matrix_get_col
@@ -20,7 +27,6 @@ matrix_get_col:
 	.cprestore OFFSET_GP
 	sw $fp,OFFSET_FP(sp)
 	sw ra,OFFSET_RA(sp)
-	s.d $f0,OFFSET_F0(sp)
 	move $fp,sp
 	
 	sw a0,TAM_STACK_FRAME($fp) # a0 = ptr matriz
@@ -60,7 +66,6 @@ exit:
 	lw gp, OFFSET_GP(sp)
 	lw $fp, OFFSET_FP(sp)
 	lw ra, OFFSET_RA(sp)
-	l.d $f0, OFFSET_F0(sp)
 	addu sp, sp, TAM_STACK_FRAME
 	jr ra
 	

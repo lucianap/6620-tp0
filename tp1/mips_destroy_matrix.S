@@ -12,9 +12,10 @@
 
 	# PRE: Recibe un ptr a matrix_t creado por 
 	# create_matrix, cuyo arreglo de elementos 
-	# esta almacenado en el heap a traves de la 
-	# funcion mymalloc
-	# POST: Destruye la matrix y libera el su arreglo
+	# puede estar almacenado en el heap a traves 
+	# de la funcion mymalloc, o ser nulo (0)
+	# POST: Destruye la matrix y libera el su 
+	# arreglo si es que existe
 
 	# Declaro y defino mi funcion
 	.globl destroy_matrix	
@@ -37,15 +38,13 @@ destroy_matrix:
 
 	# Inicio codigo de la funcion
 	# Libero matrix->array
-	lw a0, 8(a0)	
-	# a0 es ptr a matrix, 8(a0) es el contenido 
-	# de lo que hay a 8 bytes de a0, que es un 
-	# ptr array
+	lw a0, 8(a0)	# a0 = matrix->array
+	beq a0, 0, continuar_destruir	# a0 == 0 ?
 	la t9, myfree
 	jal ra, t9
-
+continuar_destruir:
 	# Recupero registros perdidos
-	lw a0, TAM_STACK_FRAME($fp)
+	lw a0, TAM_STACK_FRAME($fp)	# a0 = ptr matrix
 
 	# Libero matrix
 	la t9, myfree

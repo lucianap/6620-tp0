@@ -1,15 +1,23 @@
 #include <mips/regdef.h>
 #include <sys/syscall.h>
-#define TAM_STACK_FRAME 40
-#define OFFSET_F0 16
-#define OFFSET_GP 24
-#define OFFSET_FP 28
-#define OFFSET_RA 32
-.text
-.abicalls
-.align 2
-.global matrix_get_row
-.ent matrix_get_row
+#define TAM_STACK_FRAME 32
+#define OFFSET_GP 16
+#define OFFSET_FP 20
+#define OFFSET_RA 24
+	.text
+	.abicalls
+	.align 2
+
+	# PRE: Recibe un puntero a matrix_t y 
+	# un numero de fila valido en la matriz
+	# POST: Devuelve un arreglo de doubles con 
+	# elementos de la fila seleccionada 
+	# almacenados en el heap
+	# Queda a responsabilidad del usuario, liberar
+	# dicha memoria mediante la rutina myfree
+
+	.global matrix_get_row
+	.ent matrix_get_row
 matrix_get_row:
 	.frame $fp,TAM_STACK_FRAME,ra
 	.set	noreorder
@@ -19,11 +27,13 @@ matrix_get_row:
 	.cprestore OFFSET_GP
 	sw $fp,OFFSET_FP(sp)
 	sw ra,OFFSET_RA(sp)
-	s.d $f0,OFFSET_F0(sp)
 	move $fp,sp
 	
-	sw a0,TAM_STACK_FRAME($fp) #guardo el primer parametro (la matriz)
-	sw a1,(TAM_STACK_FRAME + 4)($fp) #guardo el segundo parametro (numero de fila)
+	sw a0,TAM_STACK_FRAME($fp) 	# Guardo el primer 
+								# parametro (la matriz)
+	sw a1,(TAM_STACK_FRAME + 4)($fp) 	# Guardo el segundo 
+										# parametro (numero 
+										# de fila)
 	
 	lw a0,(a0)
 	sll a0,a0,3
@@ -34,8 +44,8 @@ matrix_get_row:
 	
 	li t0,0
 	lw t1,TAM_STACK_FRAME ($fp) # t1 = struct matriz
-	lw t2,(t1) # t2 = cant de filas
-	lw t3,TAM_STACK_FRAME + 4($fp) #Obtengo numero de fila
+	lw t2,(t1) # t2 = cantidad de filas
+	lw t3,TAM_STACK_FRAME + 4($fp) # Obtengo numero de fila
 	lw t6,8(t1) #t6 = array matrix
 	mul t4, t3, t2 # m->rows * row_n	
 	move a2,v0
@@ -60,7 +70,6 @@ exit:
 	lw gp, OFFSET_GP(sp)
 	lw $fp, OFFSET_FP(sp)
 	lw ra, OFFSET_RA(sp)
-	l.d $f0, OFFSET_F0(sp)
 	addu sp, sp, TAM_STACK_FRAME
 	jr ra
 	

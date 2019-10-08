@@ -84,16 +84,16 @@ void show_help() {
     char buffer[512];
 	snprintf(buffer, sizeof buffer, "%s",
    			"\tUsage: \n"
-   			"\t\t./tp0 -h \n"
-   			"\t\t./tp0 -V \n"
-            "\t\t./tp0 < in_file > out_file\n"   
-   			"\ttp0 [options] \n"
+   			"\t\t./tp1 -h \n"
+   			"\t\t./tp1 -V \n"
+            "\t\t./tp1 < in_file > out_file\n"   
+   			"\ttp1 [options] \n"
    			"\tOptions: \n"
    			"\t\t-V, --version \tPrint version and quit.\n"
    			"\t\t-h, --help \tPrint this information.\n"
 			"\tExamples:\n"
-			"\t\t./tp0 < in.txt > out.txt\n"
-            "\t\tcat in.txt | ./tp0 > out.txt\n"
+			"\t\t./tp1 < in.txt > out.txt\n"
+            "\t\tcat in.txt | ./tp1 > out.txt\n"
             
 		);
 	printf("%s\r\n", buffer);
@@ -102,7 +102,7 @@ void show_help() {
 
 // Imprime la version del programa
 void version() {
-	printf("%s", "tp0 version 1.0\n");
+	printf("%s", "tp1 version 1.0\n");
 }
 
 // Procesa los argumentos del programa para
