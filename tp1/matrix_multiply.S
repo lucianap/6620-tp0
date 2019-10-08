@@ -65,9 +65,12 @@ matrix_multiply:
 	# Reservamos memoria para new_matrix->array
 	lw t0, (a2)		# t0 = new_matrix->rows
 	mul t2, t0, t0	# t2 = t0 * t0  
-					#	 = new_matrix->rows * new_matrix->rows
-					# 	 = cantidad posiciones array
-	sll t2, t2, 3	# Multiplico por 8 = 2^3, pues son doubles 
+					#	= new_matrix->rows 
+						# * new_matrix->rows
+					# 	= cantidad posiciones 
+						# array
+	sll t2, t2, 3	# Multiplico por 8 = 2^3, 
+					# pues son doubles 
 					# => cantidad bytes en array
 	move a0, t2
 	la t9, mymalloc
@@ -143,8 +146,9 @@ j_loop:
 	lw t3, OFFSET_T3($fp)	# t3 = i (indice i)
 	lw t4, OFFSET_T4($fp)	# t4 = j (indice j)
 
-	move t2, v0					# Salvo el resultado de get_col
-								# t2 = columna actual (array de doubles)
+		move t2, v0		# Salvo el resultado de get_col
+						# t2 = columna actual 
+						# (array de doubles)
 
 	and t5, t5, zero			# iterador t5
 
@@ -227,7 +231,7 @@ end_j_loop:
 array_malloc_error:
 	lw a0, (TAM_STACK_FRAME + 8)($fp) # a0 = ptr new_matrix
 	la t9, destroy_matrix 	# destroy_matrix ya considera 
-						  	# el caso de matrix_t sin array
+							# el caso de matrix_t sin array
 	jal ra, t9
 	b matrix_multiply_error
 
