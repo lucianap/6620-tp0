@@ -14,7 +14,7 @@
 #define OFFSET_T4 32
 #define OFFSET_T5 36
 
-	.text	# texto a continuacion
+	.text	    # texto a continuacion
 	.abicalls	# Vamos a respetar las convenciones
 	.align 2	# Alinea (solamente) la siguiente instruccion a 2 bytes
 
@@ -41,10 +41,6 @@ matrix_multiply:
     # Fin receta
 
 	# Inicio codigo de la funcion
-
-	# Queremos devolver una matriz llena de 10s, 
-	# para probar el correcto funcionamiento 
-	# de myalloc y myfree
 
 	# Creamos matriz nueva
 	move t0, a0		# t1 = a0 = matrix_1 
@@ -164,18 +160,18 @@ k_loop:
 end_k_loop:
 
 	#Coloco el numero calculado en su posicion final en la matriz a3
-	sll t7, s1, 3					# escalo el iterador i
-	move t8, a3						# muevo t8 al inicio de a3 = ptr new matrix
-	addu t7, t7, t8					# avanzo t7 bytes t8 y lo guardo en t7
-	s.d $f4, (t7) 					# store del resultado en new matrix
-	li.d $f4, 0 					# reset del acumulador
+	sll t7, s1, 3	 # escalo el iterador i
+	move t8, a3		 # muevo t8 al inicio de a3 = ptr new matrix
+	addu t7, t7, t8	 # avanzo t7 bytes t8 y lo guardo en t7
+	s.d $f4, (t7) 	 # store del resultado en new matrix
+	li.d $f4, 0 	 # reset del acumulador
 	addiu s1, s1, 1
 
 	addiu t4, t4, 1
 	b j_loop
 
 end_j_loop:
-	addiu t3, t3, 1					# avanzo t3 una posición
+	addiu t3, t3, 1		# avanzo t3 una posición
 	b i_loop
 
 
