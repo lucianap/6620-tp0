@@ -1,10 +1,11 @@
 #include <mips/regdef.h>
 #include <sys/syscall.h>
-#define TAM_STACK_FRAME 48
+#define TAM_STACK_FRAME 56
 #define OFFSET_GP 32
 #define OFFSET_FP 36
 #define OFFSET_RA 40
 #define OFFSET_S1 44
+#define OFFSET_S1_n 48
 #define OFFSET_T0 16
 #define OFFSET_T1 20
 #define OFFSET_T3 24
@@ -92,17 +93,17 @@ matrix_multiply:
 	lw t0, (a0)		# t0 = matrix_1->rows
 
 	#Construyo iteradores
-	and t3, t3, zero
+	and t3, t3, zero	
 	and s1, s1, zero 	# iterador de posición 
-						# dentro de la matriz.
-	
-
+						# dentro del arreglo de 
+						# la nueva matriz.	
 i_loop:
 	beq t0, t3, end_matrix_multiply # t3 = i
 
 	#Guardo el estado de los ts en el stack
 	sw t0, OFFSET_T0($fp)
 	sw t3, OFFSET_T3($fp)
+	sw s1, OFFSET_S1_n($fp)
 	
 	move a0, a0
 	move a1, t3 
@@ -114,8 +115,9 @@ i_loop:
 	lw a1, (TAM_STACK_FRAME + 4)($fp)	# a1 = ptr matrix_2
 	lw a2, (TAM_STACK_FRAME + 8)($fp)	# a2 = ptr new_matrix
 	lw a3, (TAM_STACK_FRAME + 12)($fp)	# a3 = new_matrix->array
-	lw t0, OFFSET_T0($fp)	# new_matrix->rows
+	lw t0, OFFSET_T0($fp)	# matrix_1->rows
 	lw t3, OFFSET_T3($fp)	# nro fila actual
+	lw s1, OFFSET_S1_n($fp)	# s1 = indice new_matrix->array
 
 	move t1, v0		# Salvo el resultado de get_row	
 					# t1 = fila actual (array de doubles)
@@ -125,12 +127,13 @@ i_loop:
 j_loop:
 	beq t0, t4, end_j_loop	# t4 = j
 	
-	sw t0, OFFSET_T0($fp)
-	sw t1, OFFSET_T1($fp)
-	sw t3, OFFSET_T3($fp)
-	sw t4, OFFSET_T4($fp)
+	sw t0, OFFSET_T0($fp) # t0 = matrix_1->rows
+	sw t1, OFFSET_T1($fp) # t1 = matrix_1[i] (fila)
+	sw t3, OFFSET_T3($fp) # t3 = i
+	sw t4, OFFSET_T4($fp) # t4 = j
+	sw s1, OFFSET_S1_n($fp)
 	
-	#preparo argumentos y llamo a funcion
+	# Preparo argumentos y llamo a funcion
 	move a0, a1		# a0 = a1 = ptr matrix_2
 	move a1, t4 	# a1 = nro columna actual
 	la t9, matrix_get_col
@@ -140,17 +143,21 @@ j_loop:
 	lw a0, (TAM_STACK_FRAME)($fp) 		# a0 = ptr matrix_1
 	lw a1, (TAM_STACK_FRAME + 4)($fp)	# a1 = ptr matrix_2
 	lw a2, (TAM_STACK_FRAME + 8)($fp)	# a2 = ptr new_matrix
-	lw a3, (TAM_STACK_FRAME + 12)($fp)	# a3 = new_matrix->array
-	lw t0, OFFSET_T0($fp)	# new_matrix->rows
-	lw t1, OFFSET_T1($fp)	# fila actual (array de doubles)
+	lw a3, (TAM_STACK_FRAME + 12)($fp)	# a3 = ptr new_matrix->array
+	lw t0, OFFSET_T0($fp)	# matrix_1->rows
+	lw t1, OFFSET_T1($fp)	# t1 = matrix_1[i=i][para todo j] (fila)
+							# (array de doubles)
 	lw t3, OFFSET_T3($fp)	# t3 = i (indice i)
 	lw t4, OFFSET_T4($fp)	# t4 = j (indice j)
+	lw s1, OFFSET_S1_n($fp)	# s1 = indice new_matrix->array
 
-		move t2, v0		# Salvo el resultado de get_col
-						# t2 = columna actual 
-						# (array de doubles)
+	move t2, v0		# Salvo el resultado de get_col
+					# t2 = matrix_2[para todo i][j=j] (columna)
+					# (array de doubles)
 
 	and t5, t5, zero			# iterador t5
+
+	li.d $f4, 0 	 # Reset del acumulador
 
 k_loop:
 	beq t0, t5, end_k_loop # t5 = k
@@ -158,12 +165,12 @@ k_loop:
 	# Obtengo actual_row[k]
 	sll t6, t5, 3
 	addu t6, t6, t1
-	l.d $f0, (t6)
+	l.d $f0, (t6)	# $f0 = matrix_1[i=i][j=k]
 
 	# Obtengo actual_col[k]
 	sll t6, t5, 3
 	addu t6, t6, t2
-	l.d $f2, (t6)
+	l.d $f2, (t6) 	# $f2 = matrix_1[i=k][j=j]
 
 	# Sumo y acumulo
 	mul.d $f6, $f0, $f2
@@ -179,7 +186,6 @@ end_k_loop:
 	move t8, a3		 # t8 = a3 = ptr new matrix
 	addu t7, t7, t8	 # Avanzo t7 bytes de t8 y lo guardo en t7
 	s.d $f4, (t7) 	 # Store del resultado en new matrix
-	li.d $f4, 0 	 # Reset del acumulador
 	addiu s1, s1, 1
 	addiu t4, t4, 1
 
@@ -188,6 +194,7 @@ end_k_loop:
 	sw t1, OFFSET_T1($fp)
 	sw t3, OFFSET_T3($fp)
 	sw t4, OFFSET_T4($fp)
+	sw s1, OFFSET_S1_n($fp)
 
 	# Libero arreglo de elementos en columna actual
 	move a0, t2
@@ -203,6 +210,7 @@ end_k_loop:
 	lw t1, OFFSET_T1($fp)	# fila actual (array de doubles)
 	lw t3, OFFSET_T3($fp)	# t3 = i (indice i)
 	lw t4, OFFSET_T4($fp)	# t4 = j (indice j)
+	lw s1, OFFSET_S1_n($fp)	# s1 = indice new_matrix->array
 
 	b j_loop
 
@@ -212,6 +220,7 @@ end_j_loop:
 	# Guardo registros que quiero mantener
 	sw t0, OFFSET_T0($fp)
 	sw t3, OFFSET_T3($fp)
+	sw s1, OFFSET_S1_n($fp)
 
 	# Libero arreglo de elementos en fila actual
 	move a0, t1
@@ -225,6 +234,7 @@ end_j_loop:
 	lw a3, (TAM_STACK_FRAME + 12)($fp)	# a3 = new_matrix->array
 	lw t0, OFFSET_T0($fp)	# new_matrix->rows
 	lw t3, OFFSET_T3($fp)	# nro fila actual
+	lw s1, OFFSET_S1_n($fp)	# s1 = indice new_matrix->array
 
 	b i_loop
 

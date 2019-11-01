@@ -35,31 +35,31 @@ matrix_get_row:
 										# parametro (numero 
 										# de fila)
 	
-	lw a0,(a0)
-	sll a0,a0,3
-	la t9,mymalloc
-	jal ra,t9
+	lw a0, 4(a0)	# a0 = matrix->cols
+	sll a0, a0, 3	# a0 = cantidad bytes necesito
+	la t9, mymalloc
+	jal ra, t9
 	beq v0, -1, array_malloc_error
-	sw v0,(TAM_STACK_FRAME + 8)($fp)
+	sw v0, (TAM_STACK_FRAME + 8)($fp)	# v0 = array_reservado
 	
-	li t0,0
-	lw t1,TAM_STACK_FRAME ($fp) # t1 = struct matriz
-	lw t2,(t1) # t2 = cantidad de filas
-	lw t3,TAM_STACK_FRAME + 4($fp) # Obtengo numero de fila
-	lw t6,8(t1) #t6 = array matrix
-	mul t4, t3, t2 # m->rows * row_n	
-	move a2,v0
+	li t0, 0	# indice array_reservado
+	lw t1, TAM_STACK_FRAME ($fp) # t1 = ptr matriz
+	lw t2, (t1) 	# t2 = cantidad de filas = cant. cols
+	lw t3, (TAM_STACK_FRAME + 4)($fp) # nro de fila (row_n)
+	lw t6, 8(t1) 	# t6 = matrix->array
+	mul t4, t3, t2 	# matrix->rows * row_n	
+	move a2, v0		# a2 = array_reservado
 
 loop:
-	bgt t0,t2,exit
-	addu t5,t4,t0 # (m->rows * row_n) + i
-	sll t5,t5,3
-	addu t7,t6,t5 # * matriz[(m->rows * row_n) + i]
-	l.d $f0,(t7)  # matriz[(m->rows * row_n) + i]
-	sll t8,t0,3  # Aumento 8 bites al index del array
-	addu t5,a2,t8
-	s.d $f0,(t5)
-	addu t0,t0,1
+	bge t0, t2, exit
+	addu t5, t4, t0 # (matrix->rows * row_n) + i
+	sll t5, t5, 3
+	addu t7, t6, t5 # t7 = & matriz[(m->rows * row_n) + i]
+	l.d $f0, (t7)  	# matriz[(m->rows * row_n) + i]
+	sll t8, t0, 3  	# Aumento 8 bits al index del array
+	addu t5, a2, t8 # t5 = & array_reservado[k]
+	s.d $f0, (t5)	# array_reservado[k] = matriz[(m->rows * row_n) + i]
+	addu t0, t0, 1
 	b loop
 
 array_malloc_error:

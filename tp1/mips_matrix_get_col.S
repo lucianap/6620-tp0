@@ -23,43 +23,44 @@ matrix_get_col:
 	.set	noreorder
 	.cpload	t9
 	.set	reorder
-	subu sp,sp,TAM_STACK_FRAME
+	subu sp, sp, TAM_STACK_FRAME
 	.cprestore OFFSET_GP
-	sw $fp,OFFSET_FP(sp)
-	sw ra,OFFSET_RA(sp)
-	move $fp,sp
+	sw $fp, OFFSET_FP(sp)
+	sw ra, OFFSET_RA(sp)
+	move $fp, sp
 	
-	sw a0,TAM_STACK_FRAME($fp) # a0 = ptr matriz
-	sw a1,(TAM_STACK_FRAME + 4)($fp) # a1 = nro columna
+	sw a0, TAM_STACK_FRAME($fp) # a0 = ptr matriz
+	sw a1, (TAM_STACK_FRAME + 4)($fp) # a1 = nro columna
 	
 	lw a0, 4(a0)	# a0 = matriz->cols
 	sll a0, a0, 3	# a0 = matriz->cols * sizeof(double)
 	la t9, mymalloc	
-	jal ra,t9
+	jal ra, t9
 	beq v0, -1, array_malloc_error
-	sw v0,(TAM_STACK_FRAME + 8)($fp)
+	sw v0, (TAM_STACK_FRAME + 8)($fp)	# v0 = array of doubles
 	
-	li t0, 0
+	li t0, 0	# t0 = indice
 	lw t1, TAM_STACK_FRAME($fp) 	# t1 = ptr matriz
-	lw t2, 4(t1) 	# t2 = matriz->cols = cant de cols 
-	lw t3,TAM_STACK_FRAME + 4($fp) # t3 = nro columna
+	lw t2, 0(t1) 	# t2 = matriz->rows = cant de filas 
+	lw t3, (TAM_STACK_FRAME + 4)($fp) # t3 = nro columna
 	lw t4, 8(t1) 	# t4 = matrix->array
-	move a2,v0		# a2 = array_nro_col
+	move a2,v0		# a2 = array_reservado
 
 loop:
-	bgt t0, t2, exit
-	sll t5, t3, 3	# t3 = nro_columna * sizeof(double)
-	addu t6, t4, t5 # * matriz[pos] = ptr matrix[pos]
-	l.d $f0, (t6)  # matriz[pos]
-	sll t7, t0, 3  # Aumento 8 bites al index del array
-	addu t8, a2, t7
-	s.d $f0, (t8)
+	bge t0, t2, exit
+	sll t5, t3, 3	# t5 = nro_columna * sizeof(double)
+	addu t6, t4, t5 # t6 = & matriz[i][j=nro columna]
+	l.d $f0, (t6)  	# $f0 = matriz[i][j=nro columna]
+	sll t7, t0, 3  	# Aumento 8 bits al index del array
+					# t7 = indice byte k del array reservado	
+	addu t8, a2, t7	# t8 = & array_reservado[k]
+	s.d $f0, (t8)	# array_reservado[k] = matriz[i][j=nro columna]
 	addu t3, t3, t2
 	addu t0, t0, 1
 	b loop
 
 array_malloc_error:
-	li v0,0
+	li v0, 0
 	b exit
 
 exit:
