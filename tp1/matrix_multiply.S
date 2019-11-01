@@ -240,8 +240,9 @@ end_j_loop:
 
 array_malloc_error:
 	lw a0, (TAM_STACK_FRAME + 8)($fp) # a0 = ptr new_matrix
-	la t9, destroy_matrix 	# destroy_matrix ya considera 
-							# el caso de matrix_t sin array
+	la t9, destroy_matrix 	
+	# destroy_matrix ya considera 
+	# el caso de matrix_t sin array
 	jal ra, t9
 	b matrix_multiply_error
 

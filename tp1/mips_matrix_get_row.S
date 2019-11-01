@@ -29,11 +29,12 @@ matrix_get_row:
 	sw ra,OFFSET_RA(sp)
 	move $fp,sp
 	
-	sw a0,TAM_STACK_FRAME($fp) 	# Guardo el primer 
-								# parametro (la matriz)
-	sw a1,(TAM_STACK_FRAME + 4)($fp) 	# Guardo el segundo 
-										# parametro (numero 
-										# de fila)
+	sw a0,TAM_STACK_FRAME($fp) 	
+	# Guardo el primer 
+	# parametro (la matriz)
+	sw a1,(TAM_STACK_FRAME + 4)($fp) 	
+	# Guardo el segundo 
+	# parametro (numero # de fila)
 	
 	lw a0, 4(a0)	# a0 = matrix->cols
 	sll a0, a0, 3	# a0 = cantidad bytes necesito
