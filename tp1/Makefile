@@ -3,9 +3,6 @@ CFLAGS=-Wall -g
 c_common: main.c print_matrix.o c_matrix.o mymalloc_2.o
 	$(CC) $(CFLAGS) -o tp1 main.c print_matrix.o c_matrix.o mymalloc_2.o
 
-mips_malloc_c: main.c print_matrix.o matrix_multiply.o mips_destroy_matrix.o mips_create_matrix.o mips_matrix_get_row.o mips_matrix_get_col.o mymalloc_2.o
-	$(CC) $(CFLAGS) -o tp1 main.c print_matrix.o matrix_multiply.o mips_destroy_matrix.o mips_create_matrix.o mips_matrix_get_row.o mips_matrix_get_col.o mymalloc_2.o
-
 mips_malloc_catedra: main.c print_matrix.o matrix_multiply.o mips_destroy_matrix.o mips_create_matrix.o mips_matrix_get_row.o mips_matrix_get_col.o mymalloc.o
 	$(CC) $(CFLAGS) -o tp1 main.c print_matrix.o matrix_multiply.o mips_destroy_matrix.o mips_create_matrix.o mips_matrix_get_row.o mips_matrix_get_col.o mymalloc.o
 
@@ -41,4 +38,4 @@ mymalloc_2.o: mymalloc_2.c mymalloc.h
 
 .PHONY: clean
 clean:
-	rm -rf *.o
+	rm -rf *.o tp1
